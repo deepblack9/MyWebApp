@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+	<meta charset="UTF-8">
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>Custmer UI Examples</title>
+
+	<!-- Set render engine for 360 browser -->
+	<meta name="renderer" content="webkit">
+
+	<!-- No Baidu Siteapp-->
+	<meta http-equiv="Cache-Control" content="no-siteapp"/>
+
+	<!--<link rel="icon" type="image/png" href="assets/i/favicon.png">-->
+
+	<!-- Add to homescreen for Chrome on Android -->
+	<meta name="mobile-web-app-capable" content="yes">
+	<!--<link rel="icon" sizes="192x192" href="assets/i/app-icon72x72@2x.png">-->
+
+	<!-- Add to homescreen for Safari on iOS -->
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-title" content="Custmer UI"/>
+	<!--<link rel="apple-touch-icon-precomposed" href="assets/i/app-icon72x72@2x.png">-->
+
+	<!-- Tile icon for Win8 (144x144 + tile color) -->
+	<!--<meta name="msapplication-TileImage" content="assets/i/app-icon72x72@2x.png">-->
+	<meta name="msapplication-TileColor" content="#0e90d2">
+
+	<!-- SEO: If your mobile URL is different from the desktop URL, add a canonical link to the desktop page https://developers.google.com/webmasters/smartphone-sites/feature-phones -->
+	<!--
+	<link rel="canonical" href="http://www.example.com/">
+	-->
+
+	<link rel="stylesheet" href="assets/css/bootstrap.min.css"/>
+	<link rel="stylesheet" href="assets/components/metisMenu/metisMenu.css"/>
+	<link rel="stylesheet" href="assets/css/sidebar.css">
+	<script type="text/javascript" src="assets/js/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="assets/js/vue.js"></script>
+	<script type="text/javascript" src="assets/components/metisMenu/metisMenu.js"></script>	
+	<style type="text/css">
+	  * {margin:0px;}
+	  html {height: 100%; }
+	  body {height: 100%; padding: 0; margin:0 auto; overflow: hidden; position: relative; font-size: 14px;}
+	  div { margin:0 auto;}
+	  #container { top: 0px; left: 0px; padding: 0; margin: 0; min-height:100%; background-color:#0e90d2;}
+	  *html #container {height:100%; background-color:#f00;}
+	  *html body {height:100%; }
+	  #head{ height:60px; margin: 0; background:#ddd;}
+	  #main{ margin: 0; overflow:auto;}
+	  #sidebar{ margin: 0; padding: 0; overflow: auto;}
+	  /*#content{ height:100%; margin: 0; background-color:#ee1155;}*/
+	  #foot{ height:30px;margin: 0; background-color:#ccc;}
+	</style>
+  </head>
+  <body class="container-fluid" id="container">
+	  <div class="row" id="head" v-bind:style="{height: height + 'px'}">
+		<div class="col-md-12"></div>
+	  </div>
+	  <div class="row" id="main" v-bind:style="{height: height + 'px'}">
+	  	<div class="col-md-2 sidebar" id="sidebar" v-bind:style="{height: height + 'px'}">
+	  	  <sidebar></sidebar>
+	  </div>
+	<section class="content" id="content">
+      <div class="col-xs-12">
+        <h3>Auto Collapse
+          <small>default</small>
+        </h3>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Code
+            <span class="pull-right">
+              <span class="fa fa-code"></span>
+            </span>
+          </div>
+          <div class="panel-body">
+            <pre><code class="language-markup">&lt;script 
+				src="metisMenu.js"&gt;&lt;/script&gt;
+				&lt;script&gt;
+				  $(function () {
+				    $('#menu').metisMenu();
+				  });
+				&lt;/script&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+	  </div>
+	  <div class="row" id="foot" v-bind:style="{height: height + 'px'}">
+		<div class="col-md-12"></div>
+	  </div>
+  </body>
+  <script type="text/javascript" src="assets/js/component/app.js"></script>
+  <script type="text/javascript">
+
+  </script>
+</html>
