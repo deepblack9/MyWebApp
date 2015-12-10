@@ -1,37 +1,11 @@
 <style scoped>
 #content{ 
-  height:100%;
-  margin: 0; 
-  padding: 0; 
-  overflow: hidden; 
-  /*overflow-x:hidden;*/
-  background-color:#fafafa;
-  }
-
-.row-tabs {
-  /*position: relative;*/
-  height: 42px;
-  margin: 0; 
-  padding: 0; 
-  background: #fafafa;
-  line-height: 40px;
-}
-
-.tab-content{
-  margin: 0; 
-  padding: 0; 
-  height: calc(100% - 42px);
-  width: 100%;
-  overflow: auto;
-}
-
-.tab-content > .tab-panel{
-  margin: 0; 
-  padding: 0; 
-  /*height: calc(100% - 42px);*/
   height: 100%;
-  width: 100%;
-}
+  margin: 0; 
+  padding: 0; 
+  overflow: hidden;
+  /*overflow-x:hidden;*/
+  }
 </style>
 
 <template>
@@ -48,7 +22,7 @@
         :header="r.header"
         :disabled="r.disabled"
         :close="r.close">
-        <components v-if="r.pageType=='nomal'" :is="r.url" keep-alive :height="height"></components>
+        <components v-if="r.pageType=='nomal'" :is="r.url" keep-alive :height="height" width="100%"></components>
         <iframe v-if="r.pageType=='iframe'" :src="r.url" width="100%" height="100%" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="yes" allowtransparency="yes"></iframe>
       </tab>
     </tabs>
@@ -58,7 +32,7 @@
 <script>
 import tabs from './base/Tabset.vue'
 import tab from './base/Tab.vue'
-import VueRouter from 'vue-router'
+// import VueRouter from 'vue-router'
 import MainHome from './MainHome.vue'
 import BaseCrudPage from './page/BaseCrudPage.vue'
 import BaseFormPage from './page/BaseFormPage.vue'

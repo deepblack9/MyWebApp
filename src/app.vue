@@ -1,5 +1,5 @@
 <style scoped>
-  #container { height:100%; margin: 0; padding: 0; background-color:#0e90d2;}
+  #container { height:100%; margin: 0; padding: 0;}
 </style>
 
 <template>

@@ -9,17 +9,20 @@
 </style>
 
 <template>
-  <form>
-    <div class="row" v-for="r in formFields">
-      <div class="col-md-4" v-for="c in r">
-        <label class="col-md-3">{{c.fieldLabel}}</label>
-        <input class="col-md-6" type="text" name="{{c.name}}"/>
-      </div>
+  <div>
+    <base-form :col="3">
+      <div id="toolbar" slot="toolbar">
+      <button id="add" class="btn btn-default" @click="showRight = true">
+        <i class="glyphicon glyphicon-save"></i> 保存
+      </button>
     </div>
-  </form>
+    </base-form>
+  </div>
 </template>
 
 <script>
+import BaseForm from '../base/BaseForm.vue'
+
 export default {
   props: {
     height: Number
@@ -39,8 +42,7 @@ export default {
     }
   },
   components: {
-    // 'table-bootstrap': TableBootstrap
-    // 'table-base': TableBase
+    'base-form': BaseForm
   },
   ready() {
     // formFieldsTo3c = [];

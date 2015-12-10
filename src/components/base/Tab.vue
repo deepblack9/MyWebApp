@@ -62,5 +62,6 @@
 <style scoped>
   .tab-content > .tab-pane {
     display: block;
+    margin: 0 5px;
   }
 </style>

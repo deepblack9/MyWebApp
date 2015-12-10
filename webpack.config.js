@@ -1,14 +1,14 @@
-var webpack = require('webpack');
+var vue = require('vue-loader')
+var webpack = require('webpack')
 // var path = require('path');
 // var commonsPlugin = new webpack.optimize.CommonsChunkPlugin('common.js');
 // var ignoreFiles = new webpack.IgnorePlugin(/\.\/jquery-last.js$/);//忽略打包文件
 
 module.exports = {
-
   entry: './src/main.js',
   output: {
-    path: './dist',
-    publicPath: 'dist/',
+    path: './static',
+    publicPath: '/static/',
     filename: 'build.js'
   },
   module: {
@@ -17,8 +17,8 @@ module.exports = {
         test: /\.js$/,
         // excluding some local linked packages.
         // for normal use cases only node_modules is needed.
-        // exclude: /node_modules|vue\/src|vue-router\/|vue-loader\/|vue-hot-reload-api\//,
-        loader: 'babel?optional[]=runtime&loose=true'
+        exclude: /node_modules|vue\/dist|vue-router\/|vue-loader\/|vue-hot-reload-api\//,
+        loader: 'babel'
       },
       { test: /\.vue$/, loader: 'vue' },
       { test: /\.less$/, loader: 'style-loader!css-loader!less-loader' }, // 用 ! 来连接多个人 loader
@@ -30,12 +30,12 @@ module.exports = {
   },
   // plugins: [commonsPlugin],
   // plugins: [ignoreFiles],
-  plugins: [
-    new webpack.ProvidePlugin({
-      $: 'jquery'//这个可以使jquery变成全局变量，不用在自己文件require('jquery')了
-    }),
-    new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.bundle.js')//这是第三方库打包生成的文件
-  ],
+  // plugins: [
+  //   new webpack.ProvidePlugin({
+  //     $: 'jquery'//这个可以使jquery变成全局变量，不用在自己文件require('jquery')了
+  //   }),
+  //   new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.bundle.js')//这是第三方库打包生成的文件
+  // ],
   // resolve: {
     //查找module的话从这里开始查找
     // root: 'E:/Workspaces/something/src/libs', //绝对路径
@@ -46,11 +46,8 @@ module.exports = {
     //     layer : '../src/libs/layer-2.1/layer/layer.js'//后续直接 require('Layer') 即可
     // }
   // },
-
-  // example: if you wish to apply custom babel options
-  // instead of using vue-loader's default:
   babel: {
-    presets: ['es2015', 'stage-0'],
+    presets: ['es2015'],
     plugins: ['transform-runtime']
   }
 }

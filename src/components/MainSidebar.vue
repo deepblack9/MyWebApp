@@ -1,5 +1,5 @@
 <style scoped>
-  #sidebar{ height:100%; margin: 0; padding: 0; overflow: auto;}
+  #sidebar{ height:100%; margin: 0; padding: 0; background:#0a1012; overflow: auto;}
 </style>
 
 <template>
@@ -10,7 +10,7 @@
           <a href="#"><i class="fa fa-table"></i> <span class="nav-label">表格</span><span class="glyphicon arrow"></span></a>
           <ul class="nav nav-second-level">
             <!--<li><a class="J_menuItem" href="#" @click="click('basecrudpage','基本数据维护','crudview','nomal')">基本数据维护</a></li>-->
-            <li><a class="J_menuItem" @click="click('basecrudpage','基本数据维护','basecrudpage','nomal')">基本数据维护</a></li>
+            <li><a class="J_menuItem" href="#" @click="click('basecrudpage','基本数据维护','basecrudpage','nomal')">基本数据维护</a></li>
             <li><a class="J_menuItem" href="#" @click="click('baseformpage','表单验证','baseformpage','nomal')">表单验证</a></li>
             <li><a class="J_menuItem" href="table_jqgrid.html">jqGrid</a>
             </li>

@@ -1,5 +1,5 @@
 <style scoped>
-  #mainbody{ margin: 0; padding: 0; background:#0a1012; overflow:auto;}
+  #mainbody{ margin: 0; padding: 0; overflow:auto;}
 </style>
 
 <template>

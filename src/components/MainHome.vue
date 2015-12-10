@@ -1,5 +1,5 @@
 <style scoped>
-  #home{ margin: 0; background:#ddd;}
+  #home{ margin: 0;}
 </style>
 
 <template>

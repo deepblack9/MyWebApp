@@ -7,7 +7,7 @@
     <table-bootstrap 
       :height="height"
       :columns="columns"></table-bootstrap>
-  <!-- </div> -->
+  </div>
 </template>
 
 <script>

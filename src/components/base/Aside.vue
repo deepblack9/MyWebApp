@@ -194,11 +194,11 @@ import getScrollBarWidth from './utils/getScrollBarWidth.js'
 
   .aside .aside-dialog .aside-body {
       position: relative;
-      padding: 15px
+      padding: 10px
   }
 
   .aside .aside-dialog .aside-footer {
-      padding: 15px;
+      padding: 10px;
       text-align: right;
       border-top: 1px solid #e5e5e5
   }
