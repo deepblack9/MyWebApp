@@ -53,7 +53,7 @@ import getScrollBarWidth from './utils/getScrollBarWidth.js'
           body.appendChild(backdrop)
           body.classList.add('modal-open')
           if (scrollBarWidth !== 0) {
-            body.style.paddingRight = scrollBarWidth + 'px'
+            // body.style.paddingRight = scrollBarWidth + 'px'
           }
           // request property that requires layout to force a layout
           var x = backdrop.clientHeight

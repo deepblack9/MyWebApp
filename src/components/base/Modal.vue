@@ -19,8 +19,8 @@
         </slot>
         <slot name="modal-footer">
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" @click="close">Close</button>
-            <button type="button" class="btn btn-primary" @click="callback">Save changes</button>
+            <button type="button" class="btn btn-primary" @click="callback">确定</button>
+            <button type="button" class="btn btn-default" @click="close">取消</button>
           </div>
         </slot>
       </div>
@@ -67,7 +67,7 @@ import EventListener from './utils/EventListener.js'
           setTimeout(()=> el.classList.add('in'), 0)
           body.classList.add('modal-open')
           if (scrollBarWidth !== 0) {
-            body.style.paddingRight = scrollBarWidth + 'px'
+            // body.style.paddingRight = scrollBarWidth + 'px'
           }
           this._blurModalContentEvent = EventListener.listen(this.$el, 'click', (e)=> {
             if (e.target === el) this.show = false

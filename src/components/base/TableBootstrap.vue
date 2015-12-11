@@ -7,35 +7,49 @@
 <template>
   <div class="row table-container" :style="{height: height + 'px'}">
     <div id="toolbar">
-      <button id="add" class="btn btn-default" @click="showRight = true">
-        <i class="glyphicon glyphicon-plus"></i> Add
-      </button>
-
-      <!-- <button class="btn btn-success btn-lg"
-        v-on="click:zoomModal = true">
-        Zoom modal
-      </button>
-      <modal title="Zoom Modal" show="{{@zoomModal}}" effect="zoom" width="400">
-        <div class="modal-body">...</div>
-      </modal> -->
-
-      <aide :show.sync="showRight" placement="right" header="Title" :width="350">
-        <base-form :col="1" :record:sync="record">
-
-        </base-form>
-        <!-- <div class="aside-footer">
-          <button type="button" class="btn btn-default" @click="showRight = false">Close</button>
-        </div> -->
-      </aide>
-      <button id="remove" class="btn btn-default" disabled>
-        <i class="glyphicon glyphicon-remove"></i> Delete
-      </button>
+      <div class="btn-group">
+        <button id="table-add" class="btn btn-default" @click="showForm('add')">
+          <i class="fa fa-plus"></i>
+        </button>
+        <button id="table-edit" class="btn btn-default" @click="showForm('edit')" disabled>
+          <i class="fa fa-pencil"></i>
+        </button>
+        <aide :show.sync="showRight" placement="right" header="Title" :width="350">
+          <base-form v-if="formType=='add'" :col="1" :record="{}">
+          </base-form>
+          <base-form v-if="formType=='edit'" :col="1" :record="record">
+          </base-form>
+          <!-- <div class="aside-footer">
+            <button type="button" class="btn btn-default" @click="showRight = false">Close</button>
+          </div> -->
+        </aide>
+        <button id="table-remove" class="btn btn-default" disabled>
+          <i class="glyphicon glyphicon-remove"></i>
+        </button>
+        <button id="table-search" class="btn btn-default" @click="searchModal = true">
+          <i class="glyphicon glyphicon-search"></i>
+        </button>
+        <modal title="查询条件"
+               :show.sync="searchModal" 
+               effect="zoom" 
+               :width="800">
+          <div class="modal-body" slot="modal-body">
+            <base-form :col="3">
+            </base-form>
+          </div>
+          <div class="modal-footer" slot="modal-footer">
+            <button type="button" class="btn btn-primary" @click="query">查询</button>
+          </div>
+        </modal>
+      </div>
     </div>
     <table id="table"
+           data-id-field="id"
+           
            data-click-to-select="false"
            data-detail-view="true"
            data-detail-formatter="detailFormatter"
-           data-id-field="id"
+           
            data-minimum-count-columns="2"
            data-maintain-selected="true"
            data-pagination="true"
@@ -44,6 +58,7 @@
            data-toolbar="#toolbar"
            data-striped=true
            data-search="true"
+
            data-show-columns="true"
            data-show-export="true"
            data-show-footer="false"
@@ -53,6 +68,9 @@
            >
 
            <!--
+           data-id-table="advancedTable"
+           data-advanced-search="true"
+
            data-side-pagination="server"
            data-url="http://localhost:8080/static/demo/data.json"
            data-response-handler="responseHandler">-->
@@ -62,13 +80,15 @@
 
 <script>
 import Modal from './Modal.vue'
+// import 'bootstrap/dist/js/bootstrap.js'
 import 'bootstrap-table/dist/bootstrap-table.css'
 import 'bootstrap-table/dist/bootstrap-table.js'
-import '../../libs/bootstrap/dropdown.js'
+// import 'bootstrap-table/dist/extensions/toolbar/bootstrap-table-toolbar.js'
+import 'bootstrap-table/dist/extensions/export/bootstrap-table-export.js'
+import 'bootstrap/js/dropdown.js'
 import '../../libs/layer-v2.1/layer/layer.js'
 import Aside from './Aside.vue'
 import BaseForm from './BaseForm.vue'
-// import '../../libs/bootstrap-table/extensions/export/bootstrap-table-export.js'
 
 var scripts = [
                 'http://rawgit.com/hhurz/tableExport.jquery.plugin/master/tableExport.js',
@@ -127,7 +147,9 @@ export default {
       tableData: data,
       showLeft: false,
       showRight: false,
-      record: {}
+      searchModal: false,
+      record: {},
+      formType: 'add'
     }
   },
   components: {
@@ -136,6 +158,20 @@ export default {
     'base-form': BaseForm
   },
   methods: {
+    query: function() {
+
+    },
+    showForm: function(type) {
+      switch(type) {
+        case 'add':
+          this.formType = 'add';
+          break;
+        case 'edit':
+          this.formType = 'edit';
+          break;
+      };
+      this.showRight = true;
+    },
     totalTextFormatter: function (data) {
       return 'Total';
     },
@@ -171,9 +207,11 @@ export default {
   ready() {
     var cur_component = this,
         $table = $('#table'),
-        $remove = $('#remove'),
-        $add = $('#add'),
-        selections = [];
+        $remove = $('#table-remove'),
+        $add = $('#table-add'),
+        $edit = $('#table-edit'),
+        selections = [],
+        cur_selection = null;
     layer.config({
       path: '/src/libs/layer-v2.1/layer/' //layer.js所在的目录，可以是绝对目录，也可以是相对目录
     });
@@ -182,63 +220,66 @@ export default {
       height: cur_component.getHeight(),
       columns: this.columns.header
     });
-    // window.operateEvents = {
-    //   'click .like': function (e, value, row, index) {
-    //     alert('You click like action, row: ' + JSON.stringify(row));
-    //   },
-    //   'click .remove': function (e, value, row, index) {
-    //     $table.bootstrapTable('remove', {
-    //         field: 'id',
-    //         values: [row.id]
-    //     });
-    //   }
-    // };
+    window.operateEvents = {
+      'click .like': function (e, value, row, index) {
+        alert('You click like action, row: ' + JSON.stringify(row));
+      },
+      'click .remove': function (e, value, row, index) {
+        $table.bootstrapTable('remove', {
+            field: 'id',
+            values: [row.id]
+        });
+      }
+    };
     // sometimes footer render error.
     setTimeout(function () {
       $table.bootstrapTable('resetView');
     }, 200);
-    $table.on('dbl-click-row.bs.table', function(e, row, tr) {
-      this.record = row;
-      this.showRight = true;
+    //点击选中行
+    $table.on('click-row.bs.table', function (e, row, $element) {
+      $('.success').removeClass('success');
+      $($element).addClass('success');
+      $edit.prop('disabled', !row);
+      cur_component.record = row;
+      cur_selection = row['id'];
     });
-    // $table.on('check.bs.table uncheck.bs.table ' +
-    //         'check-all.bs.table uncheck-all.bs.table', function () {
-    //   $remove.prop('disabled', !$table.bootstrapTable('getSelections').length);
-    //   // save your data, here just save the current page
-    //   selections = cur_component.getIdSelections();
-    //   // push or splice the selections if you want to save all data selections
+    // $table.on('dbl-click-row.bs.table', function(e, row, tr) {
+    //   this.record = row;
+    //   this.showRight = true;
     // });
-    // $table.on('expand-row.bs.table', function (e, index, row, $detail) {
-    //   if (index % 2 == 1) {
-    //     $detail.html('Loading from ajax request...');
-    //     $.get('LICENSE', function (res) {
-    //       $detail.html(res.replace(/\n/g, '<br>'));
-    //     });
-    //   }
-    // });
+    $table.on('check.bs.table uncheck.bs.table ' +
+            'check-all.bs.table uncheck-all.bs.table', function () {
+      $remove.prop('disabled', !$table.bootstrapTable('getSelections').length);
+      // save your data, here just save the current page
+      selections = cur_component.getIdSelections();
+      // push or splice the selections if you want to save all data selections
+    });
+    $table.on('expand-row.bs.table', function (e, index, row, $detail) {
+      if (index % 2 == 1) {
+        $detail.html('Loading from ajax request...');
+        $.get('LICENSE', function (res) {
+          $detail.html(res.replace(/\n/g, '<br>'));
+        });
+      }
+    });
     // $table.on('all.bs.table', function (e, name, args) {
     //   console.log(name, args);
     // });
-    $add.click(function() {
-      var index = layer.open({
-        type: 1,
-        shade: false,
-        title: false, //不显示标题
-        content: $('#aaa'), //捕获的元素
-        cancel: function(index){
-          layer.close(index);
-          // this.content.show();
-          layer.msg('捕获就是从页面已经存在的元素上，包裹layer的结构', {time: 5000, icon:6});
-        }
-      });
-    });
     $remove.click(function () {
       var ids = cur_component.getIdSelections();
-      $table.bootstrapTable('remove', {
+      var index = layer.confirm('确定要删除'+ids.length+'条记录？',{icon: 3,title:'提示',btn: ['删除','取消']}
+      , function(){
+        $edit.prop('disabled', true);
+        cur_selection = null
+        $table.bootstrapTable('remove', {
           field: 'id',
           values: ids
+        });        
+        $remove.prop('disabled', true);
+        layer.close(index);
+      }, function(){
+        layer.close(index);
       });
-      $remove.prop('disabled', true);
     });
     $(window).resize(function () {
       $table.bootstrapTable('resetView', {

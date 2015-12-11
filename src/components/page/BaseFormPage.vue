@@ -12,10 +12,10 @@
   <div>
     <base-form :col="3">
       <div id="toolbar" slot="toolbar">
-      <button id="add" class="btn btn-default" @click="showRight = true">
-        <i class="glyphicon glyphicon-save"></i> 保存
-      </button>
-    </div>
+        <button id="add" class="btn btn-default" @click="showRight = true">
+          <i class="glyphicon glyphicon-save"></i> 保存
+        </button>
+      </div>
     </base-form>
   </div>
 </template>
@@ -33,7 +33,7 @@ export default {
         {name:'id',fieldLabel:'Item ID',xtype:'hidden'},
         {name:'name',fieldLabel:'Item Name',xtype:'hidden'},
         {name:'price',fieldLabel:'Item Price',xtype:'hidden'}
-        ]],
+      ]],
       data: {
         id: 1,
         name: 2,
