@@ -1,22 +1,23 @@
 <template>
-<div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">
+  <div class="panel panel-default">
+    <div class="panel-heading" v-el:panel-header>
+      <!-- <h4 class="panel-title">
         <a class="accordion-toggle"
-          @click="toggleIsOpen()">
-           {{ header }}
-        </a>
-      </h4>
+          @click="toggleIsOpen()"> -->
+           {{ header }}{{headerHeight}}
+        <!-- </a> -->
+        <slot name="header"></slot>
+      <!-- </h4> -->
     </div>
-    <div class="panel-collapse"
+    <!-- <div class="panel-collapse"
       v-el:panel
       v-show="isOpen"
       transition="collapse"
-    >
-      <div class="panel-body">
-        <slot></slot>
+    > -->
+      <div class="panel-body" v-el:panel-body :style="{height: bodyHeight + 'px'}">
+        <slot name="body"></slot>
       </div>
-    </div>
+    <!-- </div> -->
   </div>
 </template>
 
@@ -29,11 +30,20 @@
       },
       header: {
         type: String
+      },
+      height: {
+        type: Number
       }
     },
     data() {
       return {
-        height: 0
+        headerHeight: 0
+        // height: 0
+      }
+    },
+    computed: {
+      bodyHeight: function() {
+        return this.height-this.headerHeight
       }
     },
     methods: {
@@ -43,11 +53,15 @@
       }
     },
     ready() {
-      const panel = this.$els.panel
-      panel.style.display = 'block'
-      this.height = panel.offsetHeight
-      panel.style.maxHeight = this.height + 'px'
-      if (!this.isOpen) panel.style.display = 'none'
+      // const panel = this.$els.panel
+      // panel.style.display = 'block'
+      // this.height = panel.offsetHeight
+      // panel.style.maxHeight = this.height + 'px'
+      // if (!this.isOpen) panel.style.display = 'none'
+      const panelHeader = this.$els.panelHeader
+      this.HeaderHeight = panelHeader.offsetHeight
+      // const panelBody = this.$els.panelBody
+      // panelBody.style.maxHeight = (this.height-this.HeaderHeight) + 'px'
     }
   }
 </script>
@@ -64,6 +78,10 @@ overflow: hidden;
 
 .collapse-enter, .collapse-leave {
   max-height: 0!important;
+}
+
+.panel-body {
+  overflow-y: auto;
 }
 
 </style>

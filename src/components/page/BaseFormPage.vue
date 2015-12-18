@@ -10,12 +10,7 @@
 
 <template>
   <div>
-    <base-form :col="3">
-      <div id="toolbar" slot="toolbar">
-        <button id="add" class="btn btn-default" @click="showRight = true">
-          <i class="glyphicon glyphicon-save"></i> 保存
-        </button>
-      </div>
+    <base-form :fields="formFields" :col="3">
     </base-form>
   </div>
 </template>
@@ -29,11 +24,26 @@ export default {
   },
   data () {
     return {
-      formFields: [[
-        {name:'id',fieldLabel:'Item ID',xtype:'hidden'},
-        {name:'name',fieldLabel:'Item Name',xtype:'hidden'},
-        {name:'price',fieldLabel:'Item Price',xtype:'hidden'}
-      ]],
+      formFields: [
+        {name:'id',fieldLabel:'Item ID',xtype:'text'},
+        {name:'name',fieldLabel:'Item Name',xtype:'text'},
+        {name:'price',fieldLabel:'Item Price',xtype:'text'},
+        {name:'id',fieldLabel:'Item ID',xtype:'text'},
+        {name:'name',fieldLabel:'Item Name',xtype:'text'},
+        {name:'price',fieldLabel:'Item Price',xtype:'text'},
+        {name:'id',fieldLabel:'Item ID',xtype:'text'},
+        {name:'name',fieldLabel:'Item Name',xtype:'text'},
+        {name:'price',fieldLabel:'Item Price',xtype:'text'},
+        {name:'id',fieldLabel:'Item ID',xtype:'text'},
+        {name:'name',fieldLabel:'Item Name',xtype:'text'},
+        {name:'price',fieldLabel:'Item Price',xtype:'text'},
+        {name:'id',fieldLabel:'Item ID',xtype:'text'},
+        {name:'name',fieldLabel:'Item Name',xtype:'text'},
+        {name:'price',fieldLabel:'Item Price',xtype:'text'},
+        {name:'id',fieldLabel:'Item ID',xtype:'text'},
+        {name:'name',fieldLabel:'Item Name',xtype:'text'},
+        {name:'price',fieldLabel:'Item Price',xtype:'text'}
+      ],
       data: {
         id: 1,
         name: 2,
@@ -45,6 +55,7 @@ export default {
     'base-form': BaseForm
   },
   ready() {
+    console.log('page: '+ this.formFields.length)
     // formFieldsTo3c = [];
     // for(var index = 0; index < this.formFields.length; index++) {
 

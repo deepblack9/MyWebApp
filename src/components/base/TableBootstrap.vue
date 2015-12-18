@@ -14,7 +14,7 @@
         <button id="table-edit" class="btn btn-default" @click="showForm('edit')" disabled>
           <i class="fa fa-pencil"></i>
         </button>
-        <aide :show.sync="showRight" placement="right" header="Title" :width="350">
+        <aside :show.sync="showRight" placement="right" header="Title" :width="350">
           <base-form v-if="formType=='add'" :col="1" :record="{}">
           </base-form>
           <base-form v-if="formType=='edit'" :col="1" :record="record">
@@ -22,7 +22,7 @@
           <!-- <div class="aside-footer">
             <button type="button" class="btn btn-default" @click="showRight = false">Close</button>
           </div> -->
-        </aide>
+        </aside>
         <button id="table-remove" class="btn btn-default" disabled>
           <i class="glyphicon glyphicon-remove"></i>
         </button>
@@ -62,9 +62,9 @@
            data-show-columns="true"
            data-show-export="true"
            data-show-footer="false"
-           data-show-pagination-switch="true"
+           data-show-pagination-switch="false"
            data-show-refresh="true"
-           data-show-toggle="true"
+           data-show-toggle="false"
            >
 
            <!--
@@ -154,7 +154,7 @@ export default {
   },
   components: {
     'modal': Modal,
-    'aide': Aside,
+    'aside': Aside,
     'base-form': BaseForm
   },
   methods: {

@@ -50,7 +50,18 @@ module.exports = {
     presets: ['es2015'],
     plugins: ['transform-runtime']
   },
-  devtool: '#source-map'
+  devtool: '#source-map',
+  devServer: {
+    hot: true,
+    inline: true,
+    //其实很简单的，只要配置这个参数就可以了
+    proxy: {
+      '/scgl/*': {
+        target: 'http://127.0.0.1:9090/',
+        secure: false
+      }
+    }
+  }
 }
 
 if (process.env.NODE_ENV === 'production') {

@@ -12,7 +12,7 @@
             <!--<li><a class="J_menuItem" href="#" @click="click('basecrudpage','基本数据维护','crudview','nomal')">基本数据维护</a></li>-->
             <li><a class="J_menuItem" href="#" @click="click('basecrudpage','基本数据维护','basecrudpage','nomal')">基本数据维护</a></li>
             <li><a class="J_menuItem" href="#" @click="click('baseformpage','表单验证','baseformpage','nomal')">表单验证</a></li>
-            <li><a class="J_menuItem" href="table_jqgrid.html">jqGrid</a>
+            <li><a class="J_menuItem" href="#" @click="click('sysmenu','菜单管理','sysmenu','nomal')">菜单管理</a>
             </li>
             <li><a class="J_menuItem" href="table_foo_table.html">Foo Tables</a>
             </li>

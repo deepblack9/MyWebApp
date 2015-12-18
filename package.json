@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "webpack-dev-server --inline --hot --quiet",
+    "dev2": "webpack-dev-server --inline --quiet",
     "build": "export NODE_ENV=production && webpack --progress --hide-modules"
   },
   "repository": {

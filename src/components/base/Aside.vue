@@ -10,7 +10,9 @@
     <div class="aside-dialog">
       <div class="aside-content">
         <div class="aside-header">
-          <button type="button" class="close" @click='close'><span>&times;</span></button>
+          <!-- <button type="button" class="close" @click='close'><span>&times;</span></button> -->
+          <button type="button" class="close" @click='handle'><span>保存</span></button>
+          <button type="button" class="close" @click='close'><span>关闭</span></button>
           <h4 class="aside-title">{{header}}</h4>
         </div>
         <div class="aside-body">
@@ -41,6 +43,9 @@ import getScrollBarWidth from './utils/getScrollBarWidth.js'
       width: {
         type: Number,
         default: '320'
+      },
+      handle: {
+        type: Function
       }
     },
     watch: {
@@ -186,10 +191,10 @@ import getScrollBarWidth from './utils/getScrollBarWidth.js'
 
   .aside .aside-dialog .aside-header .close {
       margin-right: -8px;
-      padding: 4px 8px;
+      padding: 12px 8px;
       color: #fff;
-      font-size: 25px;
-      opacity: .8
+      font-size: 14px;
+      /*opacity: .8*/
   }
 
   .aside .aside-dialog .aside-body {
@@ -227,7 +232,6 @@ import getScrollBarWidth from './utils/getScrollBarWidth.js'
       transition: opacity .3s ease;
       background-color: #000
   }
-
 
   .aside-backdrop.in {
       opacity: .5;

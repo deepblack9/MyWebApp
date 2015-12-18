@@ -1,6 +1,5 @@
 <style scoped>
 #content{ 
-  height: 100%;
   margin: 0; 
   padding: 0; 
   overflow: hidden;
@@ -9,7 +8,7 @@
 </style>
 
 <template>
-  <div class="col-md-10" id="content">
+  <div class="col-md-10" id="content" :style="{height: height + 'px'}">
     <!-- Nav tabs -->
     <tabs :height="height">
       <!--<router-view 
@@ -22,7 +21,7 @@
         :header="r.header"
         :disabled="r.disabled"
         :close="r.close">
-        <components v-if="r.pageType=='nomal'" :is="r.url" keep-alive :height="height" width="100%"></components>
+        <components v-if="r.pageType=='nomal'" :is="r.url" keep-alive :height="height-14-29-10" width="100%"></components>
         <iframe v-if="r.pageType=='iframe'" :src="r.url" width="100%" height="100%" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="yes" allowtransparency="yes"></iframe>
       </tab>
     </tabs>
@@ -36,6 +35,7 @@ import tab from './base/Tab.vue'
 import MainHome from './MainHome.vue'
 import BaseCrudPage from './page/BaseCrudPage.vue'
 import BaseFormPage from './page/BaseFormPage.vue'
+import SysMenu from './page/SysMenu.vue'
 
 export default {
   props: {
@@ -72,7 +72,8 @@ export default {
     'tab': tab,
     'home': MainHome,
     'basecrudpage': BaseCrudPage,
-    'baseformpage': BaseFormPage
+    'baseformpage': BaseFormPage,
+    'sysmenu': SysMenu
   },
   ready() {
     this.renderData.push({

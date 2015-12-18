@@ -39,16 +39,38 @@
     <link rel="stylesheet" href="http://localhost:8080/static/assets/css/animate.min.css">
 	<style type="text/css">
 	  * { margin:0px;}
-	  html { height: 100%; padding: 0; margin:0; }
-	  body { height: 100%; padding: 0; margin:0; overflow: hidden; position: relative; font-size: 14px;}
+	  html { padding: 0; margin:0; }
+	  body { padding: 0; margin:0; overflow: hidden; position: relative; font-size: 14px;}
 	  div { margin:0; padding: 0; }
 	  .row { margin:0; padding: 0; }
-	  a.focus {
+
+	  a {
+	  	text-decoration: none;
+	  	cursor: pointer;
+	  	color: #919191;
+	  } /*链接无下划线none,有为underline*/
+		a:link {
+			color: #515151;
+			text-decoration: none;
+		} /*未访问的链接 */
+		a:visited {
+			color: #515151;
+			text-decoration: none;
+		} /*已访问的链接*/
+		a:hover{
+			color: #515151;
+			text-decoration: none;
+		} /*鼠标在链接上 */
+		a:active {
+			color: #515151;
+			text-decoration: none;
+		} /*点击激活链接*/
+	  /*a.focus {
 	  	outline: 0;
 	  }
 	  a:focus, a:hover {
-		text-decoration: none;
-	  }
+			text-decoration: none;
+	  }*/
 	</style>
 	<script type="text/javascript">
 	  var CONTEXT_PATH = '/scgl';
