@@ -79,14 +79,14 @@
 </template>
 
 <script>
-import Modal from './Modal.vue'
 // import 'bootstrap/dist/js/bootstrap.js'
 import 'bootstrap-table/dist/bootstrap-table.css'
 import 'bootstrap-table/dist/bootstrap-table.js'
 // import 'bootstrap-table/dist/extensions/toolbar/bootstrap-table-toolbar.js'
 import 'bootstrap-table/dist/extensions/export/bootstrap-table-export.js'
 import 'bootstrap/js/dropdown.js'
-import '../../libs/layer-v2.1/layer/layer.js'
+
+import Modal from './Modal.vue'
 import Aside from './Aside.vue'
 import BaseForm from './BaseForm.vue'
 
@@ -139,7 +139,7 @@ var data = [{"id": 0,"name": "Item 0","price": "$0"},
 export default {
   props: {
     height: Number,
-    columns: Object,
+    columns: Array,
     url: String
   },
   data () {
@@ -212,13 +212,13 @@ export default {
         $edit = $('#table-edit'),
         selections = [],
         cur_selection = null;
-    layer.config({
-      path: '/src/libs/layer-v2.1/layer/' //layer.js所在的目录，可以是绝对目录，也可以是相对目录
-    });
-    $('[data-toggle="table"]').bootstrapTable({
+    // layer.config({
+    //   path: '/src/libs/layer-v2.1/layer/' //layer.js所在的目录，可以是绝对目录，也可以是相对目录
+    // });
+    $('#table').bootstrapTable({
       data:this.tableData,
       height: cur_component.getHeight(),
-      columns: this.columns.header
+      columns: this.columns
     });
     window.operateEvents = {
       'click .like': function (e, value, row, index) {

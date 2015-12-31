@@ -27,10 +27,13 @@ export default {
     'main-sidebar': MainSidebar,
     'main-content': MainContent
   },
+  methods: {
+    // changeTab: function(el) {
+
+    // }
+  },
   events: {
-    'chengeCurMenu': function(url, text, id) {
-      this.$broadcast('chengeCurMenu', url, text, id);
-    }
+    
   }
 }
 </script>

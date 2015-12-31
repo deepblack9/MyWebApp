@@ -31,6 +31,14 @@ export default {
     'main-head': MainHead,
     'main-body': MainBody,
     'main-foot': MainFoot
+  },
+  events: {
+    'menu-selected': function(obj) {
+      this.$broadcast('menu-selected', obj)
+    },
+    'main-changeTab': function(el) {
+      this.$broadcast('main-changeTab',el)
+    }
   }
 }
 </script>

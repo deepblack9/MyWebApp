@@ -3,12 +3,12 @@
   cursor: pointer;
 }
 .item-label {
-  margin: 2px;
+  margin: 0px;
   padding: 3px 10px;
   background-color: #eeeeee;
 }
 .item-label:hover{
-  background-color:#ddd
+  background-color: #ddd;
 }
 .item-label-click {
   background-color: #ddd;
@@ -17,25 +17,82 @@
   font-weight: bold;
 }
 ul {
-  padding-left: 1em;
-/*  line-height: 1.5em;*/
+  padding-left: 0em;
   list-style-type: none;
+  /*line-height: 1.5em;*/
+  background-color: #eeeeee;
 }
+
+/*.collapse-enter, .collapse-leave {
+  max-height: 0!important;
+}*/
+
+/*.collapse-enter {
+  animation:slideleft-in .3s;
+}
+.collapse-leave {
+  animation:slideleft-out .3s;
+}
+@keyframes slideleft-in {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes slideleft-out {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}*/
+.collapse-transition {
+  transition: max-height .9s ease;
+  overflow: hidden;
+}
+.collapse-enter, .collapse-leave {
+  opacity: 0;
+  height: 0;
+}
+
+.modal-enter, .modal-leave {
+  opacity: 0;
+}
+
+.modal-enter .modal-container,
+.modal-leave .modal-container {
+  -webkit-transform: scale(1.1);
+  transform: scale(1.1);
+}
+
 </style>
 
 <template>
   <li class="item">
     <div
-      :class="{'item-label': isLabel, 'bold': isFolder }"
-      @click="selectNode"
-      @dblclick="changeType">
-      <span v-if="isFolder" @click.stop="toggle" class="{{open ? 'fa fa-minus-square-o' : 'fa fa-plus-square-o'}}"></span>
+      :class="{'item-label': isLabel, 'bold': top, 'item-label-click': isSelected}"
+      @click.stop="toggle">
+      <span v-for="n in level">&nbsp;&nbsp;</span>
       {{model.text}}
+      <span v-if="isFolder" class="pull-right">
+        <i class="{{open ? 'fa fa-angle-down' : 'fa fa-angle-left'}}"></i>
+      </span>
     </div>
-    <ul v-show="open" v-if="isFolder">
+    <ul v-if="isFolder" v-show="open" transition="collapse">
       <item
         v-for="model in model.children"
-        :model="model">
+        :model="model"
+        :top="false"
+        :level="level+1"
+        :selected-id="selectedId"
+        @menu-node-selected="nodeSelected">
       </item>
       <!-- <li @click="addChild">+</li> -->
     </ul>
@@ -44,15 +101,22 @@ ul {
 
 <script>
 import Vue from 'vue'
-import TreeItem from './TreeItem.vue'
 
 export default {
   name: "item",
   props: {
+    top: Boolean,
     model: Object,
     handle: {
       type: Function,
       default: function(){}
+    },
+    level: {
+      type: Number,
+      default: 1
+    },
+    selectedId: {
+      type:String,
     }
   },
   data: function () {
@@ -65,37 +129,28 @@ export default {
     isFolder: function () {
       return this.model.children &&
         this.model.children.length
+    },
+    isSelected: function() {
+      return this.model.id == this.selectedId
     }
   },
   methods: {
-    selectNode: function(e) {
-      this.$dispatch('tree.nodeSelected',this.model)
-      $('.item-label-click').removeClass('item-label-click')
-      $(e.target).addClass('item-label-click')
-    },
     toggle: function () {
-      if (this.isFolder) {
-        this.open = !this.open
-      }
+      //菜单打开事件，发送MenuTree处理
+      this.$emit('menu-node-selected',this)
     },
-    changeType: function () {
-      if (!this.isFolder) {
-        Vue.set(this.model, 'children', [])
-        this.addChild()
-        this.open = true
-      }
-    },
-    addChild: function () {
-      this.model.children.push({
-        name: 'new stuff'
-      })
+    nodeSelected: function(node) {
+      this.$emit('menu-node-selected',node)
     }
   },
   enents: {
-
+    // 'tree-node-selected': function(el) {
+    //   if(this.model.id == el.id) {
+    //     console.log(this.model.text)
+    //   }
+    // }
   },
   ready() {
-    
   }
 }
 </script>

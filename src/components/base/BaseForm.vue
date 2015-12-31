@@ -24,7 +24,7 @@
       <div :class="colWidth" v-for="r in fields"> <!-- v-show="r.xtype!='hidden'" -->
         <div class="row">
           <label class="col-md-4">{{r.fieldLabel}}:</label>
-          <input class="col-md-6" :type="text" :name="r.name" v-model="model[r.mapping]" :value="record[r.mapping]">
+          <input class="col-md-6" :type="r.xtype" :name="r.name" v-model="model[r.mapping]" :value="record[r.mapping]">
         </div>
       </div>
     </form>
@@ -71,8 +71,6 @@ export default {
   },
   events: {
     'form.save': function() {
-      console.log($(this.$els.form).serialize())
-      console.log(this.url)
       var vm = this
       $.ajax({
         type:'POST',
@@ -81,9 +79,9 @@ export default {
         dataType: 'json',
         success:function(res){
           if(res.success) {
-            var data = JSON.parse(res.data)
-            for(var p in data) {
-              vm.record[p] = vm.model[p] = data[p]
+            // var data = JSON.parse(res.data)
+            for(var p in res.data) {
+              vm.record[p] = vm.model[p] = res.data[p]
               // vm.model[p] = data[p]
               vm.$dispatch('form.post.success')
             }

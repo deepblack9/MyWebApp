@@ -87,7 +87,7 @@ export default {
   },
   events: {
     //菜单点击响应事件
-    'chengeCurMenu': function(obj) {
+    'menu-selected': function(obj) {
       for (var c in this.renderData) {
         if(this.renderData[c].id == 'tab_'+obj.id) {
           this.$broadcast('handleTabShow',c,this.renderData[c]);
@@ -119,6 +119,9 @@ export default {
           return;
         }
       }
+    },
+    changeTab: function(el) {
+      this.$emit('changeTab',el)
     }
   }
 }

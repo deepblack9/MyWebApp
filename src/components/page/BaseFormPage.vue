@@ -55,7 +55,7 @@ export default {
     'base-form': BaseForm
   },
   ready() {
-    console.log('page: '+ this.formFields.length)
+    // console.log('page: '+ this.formFields.length)
     // formFieldsTo3c = [];
     // for(var index = 0; index < this.formFields.length; index++) {
 

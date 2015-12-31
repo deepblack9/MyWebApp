@@ -7,6 +7,7 @@ var App = require('./app.vue')
 // import App from './app.vue'
 // import { configRouter } from './route-config'
 // require('es6-promise').polyfill()
+require('./libs/layer-v2.1/layer/layer.js')
 
 Vue.config.debug = true;
 
@@ -20,7 +21,8 @@ var root = new Vue({
   }
 });
 
-Vue.use(require('vue-resource'))
+// Vue.use(require('vue-resource'))
+
 // install router
 // Vue.use(VueRouter);
 
@@ -82,10 +84,14 @@ Vue.use(require('vue-resource'))
 
 //过滤器：转换json字符串为json对象
 Vue.filter('json_decode',function(value){
-    return eval ("(" + value + ")");
+  return eval ("(" + value + ")");
 });
 
-//$("#sidebar").slimScroll({width:'200px',height: '100%'})
+layer.config({
+  path: '/src/libs/layer-v2.1/layer/' //layer.js所在的目录，可以是绝对目录，也可以是相对目录
+});
+
+// $("#sidebar").slimScroll({width:'200px',height: '100%'})
 
 window.onload = function(){
   root.height = window.innerHeight;

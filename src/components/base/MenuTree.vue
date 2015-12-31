@@ -10,15 +10,17 @@ ul {
 </style>
 
 <template>
-  <ul class="metismenu" id="menu">
-    <li class="active">
-      <a href="#"><i class="fa fa-table"></i> <span class="nav-label">表格</span><span class="glyphicon arrow"></span></a>
-  <!-- <ul>
-	  <menu-item v-if="hasData" v-for="model in treeData"
-	    :model="model">
-	  </menu-item>
-	  <li v-if="!hasData">没有找到数据</li>
-	</ul> -->
+  <!-- <ul class="metismenu" id="menu"> -->
+  <ul class="panel-group">
+    <menu-tree-item 
+      v-for="model in menuData" 
+      :model="model" 
+      :top="true" 
+      :selected-id="selectedId"
+      @menu-node-selected="nodeSelected">
+    </menu-tree-item>
+    <slot></slot>
+  </ul>
 </template>
 
 <script>
@@ -26,46 +28,61 @@ import MenuTreeItem from './MenuTreeItem.vue'
 
 export default {
 	props: {
-		URL: {
-			type: String
-		},
-		handle: {
-      type: Function,
-      default: function(){}
+		oneAtATime: {
+      type: Boolean,
+      default: false
+    },
+    menuUrl: {
+      type: String
     }
 	},
   data: function () {
     return {
-      treeData: [{text: '目录', children:[]}]
+      menuData: [{text: '目录', children:[]}],
+      selectedId: ''
     }
   },
   computed: {
-  	hasData: function() {
-  		return this.treeData && 
-  			this.treeData[0].children &&
-        this.treeData[0].children.length
-  	}
-  },
-  created() {
-  	var vm = this
-  	$.get(this.URL,function(data,status) {
-  		if(status == 'success') {
-  			vm.treeData[0].children.splice(0,vm.treeData[0].children.length)
-	  		vm.treeData[0].children = data
-  		}
-  	});
   },
   ready() {
-
+    var vm = this
+    $.ajax({
+      url: CONTEXT_PATH+'/security/getMenuResource.do',
+      success: function(data) {
+        if(data.success) {
+          vm.menuData = data.data;
+        }
+      }
+    })
   },
   components: {
-    'menu-item': MenuTreeItem
+    'menu-tree-item': MenuTreeItem
+  },
+  methods: {
+    nodeSelected: function(node) {
+      if(node.isFolder) {
+        if (this.oneAtATime) {
+          node.$parent.$children.forEach((item) => {
+            if (node !== item ) {
+              item.open = false
+            }
+          })
+        }
+        node.open = !node.open
+      } else {
+        $('.item-label-click').removeClass('item-label-click')
+        this.selectedId = node.model.id
+        var obj = {
+          "id": node.model.id,
+          "url": node.model.uri,
+          "header": node.model.text,
+          "pageType": 'nomal'
+        };
+        this.$emit('menu-selected',obj)
+      }
+    }
   },
   events: {
-  	// 'tree.nodeSelected': function() {
-  	// 	$('.item-label-click').remove('item-label-click')
-  	// 	console.log($('.item-label-click'))
-  	// }
   }
 }
 </script>

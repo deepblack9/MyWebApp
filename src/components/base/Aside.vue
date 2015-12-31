@@ -10,9 +10,7 @@
     <div class="aside-dialog">
       <div class="aside-content">
         <div class="aside-header">
-          <!-- <button type="button" class="close" @click='close'><span>&times;</span></button> -->
-          <button type="button" class="close" @click='handle'><span>保存</span></button>
-          <button type="button" class="close" @click='close'><span>关闭</span></button>
+          <button type="button" class="close" @click='close'><span>&times;</span></button>
           <h4 class="aside-title">{{header}}</h4>
         </div>
         <div class="aside-body">
@@ -43,9 +41,6 @@ import getScrollBarWidth from './utils/getScrollBarWidth.js'
       width: {
         type: Number,
         default: '320'
-      },
-      handle: {
-        type: Function
       }
     },
     watch: {
@@ -58,7 +53,7 @@ import getScrollBarWidth from './utils/getScrollBarWidth.js'
           body.appendChild(backdrop)
           body.classList.add('modal-open')
           if (scrollBarWidth !== 0) {
-            // body.style.paddingRight = scrollBarWidth + 'px'
+            body.style.paddingRight = scrollBarWidth + 'px'
           }
           // request property that requires layout to force a layout
           var x = backdrop.clientHeight
@@ -191,19 +186,19 @@ import getScrollBarWidth from './utils/getScrollBarWidth.js'
 
   .aside .aside-dialog .aside-header .close {
       margin-right: -8px;
-      padding: 12px 8px;
+      padding: 4px 8px;
       color: #fff;
-      font-size: 14px;
-      /*opacity: .8*/
+      font-size: 25px;
+      opacity: .8
   }
 
   .aside .aside-dialog .aside-body {
       position: relative;
-      padding: 10px
+      padding: 15px
   }
 
   .aside .aside-dialog .aside-footer {
-      padding: 10px;
+      padding: 15px;
       text-align: right;
       border-top: 1px solid #e5e5e5
   }
@@ -232,6 +227,7 @@ import getScrollBarWidth from './utils/getScrollBarWidth.js'
       transition: opacity .3s ease;
       background-color: #000
   }
+
 
   .aside-backdrop.in {
       opacity: .5;

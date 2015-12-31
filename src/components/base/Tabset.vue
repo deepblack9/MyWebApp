@@ -1,3 +1,25 @@
+<style scoped>
+  #nav-tabs-container {
+    height: 100%;
+  }
+  .nav-tabs {
+    margin-bottom: 5px;
+  }
+  .nav-tabs a {
+    color: #999;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  .nav-tabs span {
+    cursor: pointer;
+  }
+  .nav-tabs li.action {
+    background: #2f4050;
+    color: #ffffff;
+    cursor: pointer;
+  }
+</style>
+
 <template>
   <div id="nav-tabs-container">
     <!-- Nav tabs -->
@@ -49,7 +71,7 @@
         if (!el.disabled) {
           this.activeId = el.id;
         };
-        // this.$dispatch('changeTab', el);
+        this.$dispatch('main-changeTab', el);
       },
       removeTab(index, el) {
         for(var c in this.renderData) {
@@ -68,25 +90,3 @@
     }
   }
 </script>
-
-<style scoped>
-  #nav-tabs-container {
-    height: 100%;
-  }
-  .nav-tabs {
-    margin-bottom: 5px;
-  }
-  .nav-tabs a {
-    color: #999;
-    padding-left: 15px;
-    padding-right: 15px;
-  }
-  .nav-tabs span {
-    cursor: pointer;
-  }
-  .nav-tabs li.action {
-    background: #2f4050;
-    color: #ffffff;
-    cursor: pointer;
-  }
-</style>

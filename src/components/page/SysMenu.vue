@@ -65,7 +65,7 @@
 </template>
 
 <script>
-// var Utils = require('../../libs/utils.js')
+import layer from '../../libs/layer-v2.1/layer/layer.js'
 import Utils from '../../libs/utils.js'
 import Panel from '../base/Panel.vue'
 import Tree from '../base/Tree.vue'
@@ -215,22 +215,30 @@ export default {
     deleteNode: function() {
       var vm = this
       if(!Utils.isEmpty(this.currentNode)) {
-        $.post(vm.deleteUrl,
-          {
-            'model.resourceId': vm.currentNode.resourceId
-          },
-          function(data,status) {
-            if(status == 'success'){
-              if(vm.currentPNode) {
-                vm.currentPNode.children.$remove(vm.currentNode)
-              } else {
-                //删除顶层节点
-                vm.treeData.$remove(vm.currentNode)
+        var confirm = layer.confirm('确定删除当前节点？', {
+          btn: ['删除','取消'] //按钮
+        }, function(){
+          $.post(vm.deleteUrl,
+            {
+              'model.resourceId': vm.currentNode.resourceId
+            },
+            function(data,status) {
+              if(status == 'success'){
+                if(vm.currentPNode) {
+                  vm.currentPNode.children.$remove(vm.currentNode)
+                } else {
+                  //删除顶层节点
+                  vm.treeData.$remove(vm.currentNode)
+                }
+                vm.currentNode = {}
+                layer.close(confirm)
               }
-              vm.currentNode = {}
             }
-          }
-        );
+          );
+        }, function(){
+          layer.close(confirm)
+        });
+        
       } else {
         alert('请选择一个节点！')
       }

@@ -1,12 +1,13 @@
 <template>
-  <div class="modal fade" role="dialog"
+  <div role="dialog"
     v-bind:class="{
+    'modal':true,
     'fade':effect === 'fade',
     'zoom':effect === 'zoom'
     }"
     >
-    <div class="modal-dialog" role="document"
-      v-bind:style="{'width': width + 'px'}">
+    <div v-bind:class="{'modal-dialog':true,'modal-lg':large,'modal-sm':small}" role="document"
+      v-bind:style="{width: optionalWidth}">
       <div class="modal-content">
         <slot name="modal-header">
           <div class="modal-header">
@@ -19,8 +20,8 @@
         </slot>
         <slot name="modal-footer">
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" @click="callback">确定</button>
-            <button type="button" class="btn btn-default" @click="close">取消</button>
+            <button type="button" class="btn btn-default" @click="close">Close</button>
+            <button type="button" class="btn btn-primary" @click="callback">Save changes</button>
           </div>
         </slot>
       </div>
@@ -44,16 +45,27 @@ import EventListener from './utils/EventListener.js'
         twoWay: true
       },
       width: {
-        type: Number,
-        default: 600
+        default: null
       },
       callback: {
         type: Function,
-        default: function(){}
+        default() {}
       },
       effect: {
         type: String,
-        default: 'fade'
+        default: null
+      },
+      backdrop: {
+        type: Boolean,
+        default: true
+      },
+      large: {
+        type: Boolean,
+        default: false
+      },
+      small: {
+        type: Boolean,
+        default: false
       }
     },
     watch: {
@@ -67,11 +79,13 @@ import EventListener from './utils/EventListener.js'
           setTimeout(()=> el.classList.add('in'), 0)
           body.classList.add('modal-open')
           if (scrollBarWidth !== 0) {
-            // body.style.paddingRight = scrollBarWidth + 'px'
+            body.style.paddingRight = scrollBarWidth + 'px'
           }
-          this._blurModalContentEvent = EventListener.listen(this.$el, 'click', (e)=> {
-            if (e.target === el) this.show = false
-          })
+          if (this.backdrop) {
+            this._blurModalContentEvent = EventListener.listen(this.$el, 'click', (e)=> {
+              if (e.target === el) this.show = false
+            })
+          }
         } else {
           if (this._blurModalContentEvent) this._blurModalContentEvent.remove()
           el.classList.remove('in')
@@ -82,6 +96,16 @@ import EventListener from './utils/EventListener.js'
           }, 300)
         }
       }
+    },
+    computed: {
+      optionalWidth: function() {
+        if( this.width === null ) {
+          return null;
+        } else if( Number.isInteger(this.width) ) {
+          return this.width + "px";
+        }
+        return this.width;
+      },
     },
     methods: {
       close() {

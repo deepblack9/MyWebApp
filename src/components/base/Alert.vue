@@ -7,8 +7,8 @@
       'alert-warning':(type == 'warning'),
       'alert-info':	(type == 'info'),
       'alert-danger':	(type == 'danger'),
-      'top': 			(placement === 'top'  || type == 'warning' || type == 'danger'),
-      'top-right': 	(placement === 'top-right' || type == 'success' || type == 'info')
+      'top': 			(placement === 'top'),
+      'top-right': 	(placement === 'top-right')
     }"
     transition="fade"
     v-bind:style="{width:width}"
@@ -17,11 +17,6 @@
       @click="show = false">
       <span>&times;</span>
     </button>
-    <span class="icon-ok-circled alert-icon-float-left"></span>
-    <strong v-if="type=='success'">成功！</strong>
-    <strong v-if="type=='warning'">警告！</strong>
-    <strong v-if="type=='info'">提示！</strong>
-    <strong v-if="type=='danger'">失败！</strong>
     <slot></slot>
   </div>
 </template>
