@@ -14,7 +14,7 @@
       v-show="isOpen"
       transition="collapse"
     > -->
-      <div class="panel-body" v-el:panel-body :style="{height: bodyHeight + 'px'}">
+      <div class="panel-body" v-el:panel-body :style="{height: height + 'px'}">
         <slot name="body"></slot>
       </div>
     <!-- </div> -->
@@ -37,7 +37,6 @@
     },
     data() {
       return {
-        headerHeight: 0
         // height: 0
       }
     },
@@ -58,10 +57,6 @@
       // this.height = panel.offsetHeight
       // panel.style.maxHeight = this.height + 'px'
       // if (!this.isOpen) panel.style.display = 'none'
-      const panelHeader = this.$els.panelHeader
-      this.HeaderHeight = panelHeader.offsetHeight
-      // const panelBody = this.$els.panelBody
-      // panelBody.style.maxHeight = (this.height-this.HeaderHeight) + 'px'
     }
   }
 </script>

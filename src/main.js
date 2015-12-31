@@ -20,6 +20,7 @@ var root = new Vue({
   }
 });
 
+Vue.use(require('vue-resource'))
 // install router
 // Vue.use(VueRouter);
 
@@ -58,12 +59,31 @@ var root = new Vue({
 // just for debugging
 // window.router = router;
 
+// Object.prototype.Clone = function(){
+//     var objClone;
+//     if (this.constructor == Object){
+//         objClone = new this.constructor(); 
+//     }else{
+//         objClone = new this.constructor(this.valueOf()); 
+//     }
+//     for(var key in this){
+//         if ( objClone[key] != this[key] ){ 
+//             if ( typeof(this[key]) == 'object' ){ 
+//                 objClone[key] = this[key].Clone();
+//             }else{
+//                 objClone[key] = this[key];
+//             }
+//         }
+//     }
+//     objClone.toString = this.toString;
+//     objClone.valueOf = this.valueOf;
+//     return objClone; 
+// } 
+
 //过滤器：转换json字符串为json对象
 Vue.filter('json_decode',function(value){
     return eval ("(" + value + ")");
 });
-
-$("#menu").metisMenu();
 
 //$("#sidebar").slimScroll({width:'200px',height: '100%'})
 

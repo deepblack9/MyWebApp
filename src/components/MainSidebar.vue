@@ -91,17 +91,19 @@ import '../libs/sidebar.css'
 export default {
   data () {
     return {
-      msg: 'Hello from Component A!!!',
-      treeData: {"data":[{}]}
+      getUrl: CONTEXT_PATH+'/security/getSingleResc.do',
+      treeData: []
     }
   },
   ready() {
-    // $.ajax({
-    //   url: 'http://localhost:9090/security/queryTreeNoAuthResource.action',
-    //   success: function(data) {
-    //     alert(data);
-    //   }
-    // })
+    // $("#menu").metisMenu();
+    $.ajax({
+      url: CONTEXT_PATH+'/security/getMenuResource.do',
+      success: function(data) {
+        if(data.success)
+          this.treeData = data.data;
+      }
+    })
   },
   methods: {
     click: function(url, text, id, pageType, event) {

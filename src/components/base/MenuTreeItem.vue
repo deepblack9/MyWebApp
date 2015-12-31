@@ -26,19 +26,16 @@ ul {
 <template>
   <li class="item">
     <div
-      :class="{'item-label': isLabel, 'bold': isFolder, 'item-label-click': isSelected}"
+      :class="{'item-label': isLabel, 'bold': isFolder }"
       @click="selectNode"
       @dblclick="changeType">
-      <span v-if="isFolder" @click.stop="toggle" class="{{isExpanded ? 'fa fa-minus-square-o' : 'fa fa-plus-square-o'}}"></span>
+      <span v-if="isFolder" @click.stop="toggle" class="{{open ? 'fa fa-minus-square-o' : 'fa fa-plus-square-o'}}"></span>
       {{model.text}}
     </div>
-    <!-- <ul v-show="open" v-if="isFolder"> -->
-    <ul v-show="isExpanded" v-if="isFolder">
+    <ul v-show="open" v-if="isFolder">
       <item
-        v-for="child in model.children"
-        :model="child"
-        :pmodel="model">
-        <!-- @node-selected="childNodeSelected"> -->
+        v-for="model in model.children"
+        :model="model">
       </item>
       <!-- <li @click="addChild">+</li> -->
     </ul>
@@ -53,10 +50,6 @@ export default {
   name: "item",
   props: {
     model: Object,
-    pmodel: {
-      type: Object,
-      default: function(){ return null}
-    },
     handle: {
       type: Function,
       default: function(){}
@@ -65,44 +58,31 @@ export default {
   data: function () {
     return {
       open: false,
-      isLabel: true,
-      isSelected: false
+      isLabel: true
     }
-  },
-  ready() {
-    this.selectNode;
   },
   computed: {
     isFolder: function () {
       return this.model.children &&
         this.model.children.length
-    },
-    isExpanded: function () {
-      return this.model.expanded &&
-        this.model.expanded == 1
     }
   },
   methods: {
-    // childNodeSelected: function(selectModel,selectPModel) {
-    //   this.model.expanded = true
-    //   this.$emit('node-selected',selectModel,selectPModel)
-    // },
     selectNode: function(e) {
-      // this.$emit('node-selected',this.model,this.pmodel)
-      this.$dispatch('tree.nodeSelected',this.model,this.pmodel)
+      this.$dispatch('tree.nodeSelected',this.model)
       $('.item-label-click').removeClass('item-label-click')
       $(e.target).addClass('item-label-click')
     },
     toggle: function () {
       if (this.isFolder) {
-        this.model.expanded = !this.model.expanded
+        this.open = !this.open
       }
     },
     changeType: function () {
       if (!this.isFolder) {
         Vue.set(this.model, 'children', [])
         this.addChild()
-        this.model.expanded = true
+        this.open = true
       }
     },
     addChild: function () {
@@ -112,6 +92,10 @@ export default {
     }
   },
   enents: {
+
+  },
+  ready() {
+    
   }
 }
 </script>

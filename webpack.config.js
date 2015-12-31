@@ -17,7 +17,7 @@ module.exports = {
         test: /\.js$/,
         // excluding some local linked packages.
         // for normal use cases only node_modules is needed.
-        exclude: /node_modules|vue\/dist|vue-router\/|vue-loader\/|vue-hot-reload-api\//,
+        exclude: /node_modules|node_modules\/dist|vue\/dist|vue-router\/|vue-loader\/|vue-hot-reload-api\//,
         loader: 'babel'
       },
       { test: /\.vue$/, loader: 'vue' },
@@ -30,12 +30,12 @@ module.exports = {
   },
   // plugins: [commonsPlugin],
   // plugins: [ignoreFiles],
-  // plugins: [
-  //   new webpack.ProvidePlugin({
-  //     $: 'jquery'//这个可以使jquery变成全局变量，不用在自己文件require('jquery')了
-  //   }),
-  //   new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.bundle.js')//这是第三方库打包生成的文件
-  // ],
+  plugins: [
+    new webpack.ProvidePlugin({
+      $: 'jquery'//这个可以使jquery变成全局变量，不用在自己文件require('jquery')了
+    })//,
+    // new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.bundle.js')//这是第三方库打包生成的文件
+  ],
   // resolve: {
     //查找module的话从这里开始查找
     // root: 'E:/Workspaces/something/src/libs', //绝对路径
