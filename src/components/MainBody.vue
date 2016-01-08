@@ -4,8 +4,8 @@
 
 <template>
   <div class="row" id="mainbody">
-    <main-sidebar></main-sidebar>
-    <main-content :height="height"></main-content>
+    <main-sidebar class="col-md-2" :width="160"></main-sidebar>
+    <main-content class="col-md-12" :height="height" :width="width - 160"></main-content>
     <slot></slot>
   </div>
 </template>
@@ -16,6 +16,7 @@ import MainContent from './MainContent.vue'
 
 export default {
   props: {
+    width: Number,
     height: Number
   },
   data () {

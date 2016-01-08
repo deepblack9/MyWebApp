@@ -4,8 +4,8 @@
 
 <template>
   <div class="container-fluid" id="container">
-    <main-head style="height:60px"></main-head>
-    <main-body :style="{height: bodyHeight + 'px'}" :height="bodyHeight"></main-body>
+    <main-head style="height:60px">{{width}}</main-head>
+    <main-body :style="{height: bodyHeight + 'px'}" :height="bodyHeight" :width="width"></main-body>
     <main-foot style="height:30px"></main-foot>
   </div>
 </template>
@@ -16,7 +16,7 @@ import MainBody from './components/MainBody.vue'
 import MainFoot from './components/MainFoot.vue'
 
 export default {
-  props: ['height'],
+  props: ['height','width'],
   data() {
     return {
       msg: 'app'
@@ -31,6 +31,8 @@ export default {
     'main-head': MainHead,
     'main-body': MainBody,
     'main-foot': MainFoot
+  },
+  ready() {
   },
   events: {
     'menu-selected': function(obj) {

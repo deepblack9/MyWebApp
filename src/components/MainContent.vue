@@ -8,7 +8,7 @@
 </style>
 
 <template>
-  <div class="col-md-10" id="content" :style="{height: height + 'px'}">
+  <div id="content" :style="{height: height + 'px', width: width + 'px'}">
     <!-- Nav tabs -->
     <tabs :height="height">
       <!--<router-view 
@@ -21,7 +21,7 @@
         :header="r.header"
         :disabled="r.disabled"
         :close="r.close">
-        <components v-if="r.pageType=='nomal'" :is="r.url" keep-alive :height="height-14-29-10" width="100%"></components>
+        <components v-if="r.pageType=='nomal'" :is="r.url" keep-alive :height="height-14-29-10" :width="width"></components>
         <iframe v-if="r.pageType=='iframe'" :src="r.url" width="100%" height="100%" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="yes" allowtransparency="yes"></iframe>
       </tab>
     </tabs>
@@ -59,6 +59,7 @@ export default {
       type: String,
       default: 'nomal'
     },
+    width: Number,
     height: Number
   },
   data() {

@@ -3,7 +3,7 @@
 </style>
 
 <template>
-  <div class="col-md-2" id="sidebar">
+  <div id="sidebar" :style="{width: width+'px'}">
     <menu-tree 
       :one-at-atime="true" 
       :menu-url="menuUrl"
@@ -13,13 +13,16 @@
 </template>
 
 <script>
-import '../libs/metisMenu.js'
-import '../libs/metisMenu.css'
-import '../libs/sidebar.css'
+// import '../libs/metisMenu.js'
+// import '../libs/metisMenu.css'
+// import '../libs/sidebar.css'
 import MenuTree from './base/MenuTree.vue'
 
 
 export default {
+  props: {
+    width: Number
+  },
   data () {
     return {
       menuUrl: CONTEXT_PATH+'/security/getMenuResource.do',

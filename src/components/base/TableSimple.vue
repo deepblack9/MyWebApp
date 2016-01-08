@@ -1,63 +1,242 @@
 <style scoped>
-table {
+.table {
   margin-bottom: 0px;
 }
-.fixed-table-body {
-  overflow-x: auto;
-  overflow-y: auto;
-  height: 100%;
+.fixed-table-container table {
+  margin-top: 5px;
+  table-layout:fixed;
+  /*width: 100%;*/
 }
+.fixed-table-container input[type="radio"],
+.fixed-table-container input[type="checkbox"] {
+  margin: 0 auto !important;
+}
+.fixed-table-container .bs-checkbox {
+  text-align: center;
+  padding: 5px 0;
+}
+.fixed-table-body {
+  overflow-x: hidden;
+  overflow-y: hidden;
+  /*border-left: 1px solid #dddddd;*/
+  border-right: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
+  position: relative;
+}
+.fixed-talbe-tbody {
+  position: relative;
+}
+#table thead, #table tbody, #table tr {
+  display: block;
+  width: 600px;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+#table tbody {
+  height: 100px;
+  overflow-y: auto;
+  overflow-x:hidden;
+  position: relative;
+}
+#table tbody td, #table thead th {
+  display: block;
+  border: 1px solid black;
+  width: 200px;
+  float: left;
+  box-sizing: border-box;
+}
+
+.fixed-table-toolbar .dropdown-menu {
+    text-align: left;
+    max-height: 300px;
+    overflow: auto;
+}
+
+.fixed-table-toolbar .btn-group > .btn-group {
+    display: inline-block;
+    margin-left: -1px !important;
+}
+
+.fixed-table-toolbar .btn-group > .btn-group > .btn {
+    border-radius: 0;
+}
+
+.fixed-table-toolbar .btn-group > .btn-group:first-child > .btn {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.fixed-table-toolbar .btn-group > .btn-group:last-child > .btn {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.fixed-table-pagination div.pagination,
+.fixed-table-pagination .pagination-detail {
+  margin-top: 5px;
+  margin-bottom: 0px;
+}
+
+.fixed-table-pagination div.pagination .pagination {
+  margin: 0;
+}
+
+.fixed-table-pagination .pagination a {
+  padding: 6px 12px;
+  line-height: 1.428571429;
+}
+
+.fixed-table-pagination .pagination-info {
+  line-height: 34px;
+  margin-right: 5px;
+}
+
+.fixed-table-pagination .btn-group {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.fixed-table-pagination .dropup .dropdown-menu {
+  margin-bottom: 0;
+}
+
+.fixed-table-pagination .page-list {
+  display: inline-block;
+}
+
 </style>
 
 <template>
   <div class="bootstrap-table" :class="[classes?classes:'table',classes?classes:'table-hover', striped?tableStriped:'', border?'':tableNoBordered]" :style="{height: height + 'px'}">
-    <div class="fixed-table-toolbar" v-el:toolbar><slot name="toolbar"></slot></div>
-    <div class="fixed-table-pagination" style="clear: both;" v-if="paginationVAlign === 'top' || paginationVAlign === 'both'"></div>
-    <div class="fixed-table-container" :class="[border?'':'table-no-bordered']" :Style="{height: tableHeight + 'px'}">
-      <div class="fixed-table-header" :style="{'margin-right': scrollWidth + 'px'}" v-show='showHeader' v-el:table-header>
-        <table class="table table-bordered">
-          <tr v-for="row in columns">
-            <th v-for="column in row"
-                @click="sortBy(key)"
-                rowspan="{{column.rowspan}}"
-                colspan="{{column.colspan}}"
-                style="text-align: center; vertical-align: middle;">
-              {{column.title}}
-            </th>
-          </tr>
-        </table>
+    <div class="fixed-table-toolbar" :style="{height:toolbarHeight+'px'}" v-el:toolbar>
+      <div class="btn-group">
+        <button id="table-add" class="btn btn-default" @click="showForm('add')">
+          <i class="fa fa-plus"></i>
+        </button>
+        <button id="table-edit" class="btn btn-default" @click="showForm('edit')" disabled>
+          <i class="fa fa-pencil"></i>
+        </button>
+        <aside :show.sync="showRight" placement="right" header="Title" :width="350">
+          <base-form v-if="formType=='add'" :col="1" :record="{}">
+          </base-form>
+          <base-form v-if="formType=='edit'" :col="1" :record="record">
+          </base-form>
+          <!-- <div class="aside-footer">
+            <button type="button" class="btn btn-default" @click="showRight = false">Close</button>
+          </div> -->
+        </aside>
+        <button id="table-remove" class="btn btn-default" disabled>
+          <i class="glyphicon glyphicon-remove"></i>
+        </button>
+        <button id="table-search" class="btn btn-default" @click="searchModal = true">
+          <i class="glyphicon glyphicon-search"></i>
+        </button>
+        <modal title="查询条件"
+               :show.sync="searchModal" 
+               effect="zoom" 
+               :width="800">
+          <div class="modal-body" slot="modal-body">
+            <base-form :col="3">
+            </base-form>
+          </div>
+          <div class="modal-footer" slot="modal-footer">
+            <button type="button" class="btn btn-primary" @click="query">查询</button>
+          </div>
+        </modal>
       </div>
-      <div class="fixed-table-body" v-el:table-body>
-        <!-- <div class="fixed-table-loading">
-        this.options.formatLoadingMessage()
-        </div> -->
-        <table class="table table-bordered" :style="{'margin-top': headerHeight+'px'}">
+      <slot name="toolbar"></slot>
+    </div>
+    <div class="fixed-table-container" :class="[border?'':'table-no-bordered']" :Style="{height: height - toolbarHeight - paginationHeight + 'px'}">
+      <div class="fixed-table-header" v-show='showHeader' v-el:table-header>
+        <!-- <table class="table table-bordered table-striped table-hover table-condensed">
           <thead>
             <tr v-for="row in columns">
               <th v-for="column in row"
-                  @click="sortBy(key)"
-                  rowspan="{{column.rowspan}}"
-                  colspan="{{column.colspan}}"
-                  :style="{width: column.colspan * column.width}"
-                  style="border-bottom: 1px; text-align: center; vertical-align: middle;">
-                {{column.title}}
+                  @click="columnClickHandle(column)"
+                  :rowspan="column.rowspan"
+                  :colspan="column.colspan"
+                  :style="column.checkbox?column.style:''"
+                  :class="{'bs-checkbox': column.checkbox}">
+                <div v-if="column.checkbox"><input name="btSelectAll" type="checkbox" @click="headCheckHandle"/></div>
+                <div v-else>{{column.title}}</div>
               </th>
             </tr>
           </thead>
-          <tbody class="fixed-talbe-tbody">
-            <tr v-for="row in data">
-              <td v-for="col in header.fields">{{row[col]}}</td>
+        </table> -->
+      </div>
+      <div v-el:table-body class="fixed-table-body table-responsive" :style="{height: height - toolbarHeight - paginationHeight + 'px'}" style="width:800px">
+      <!-- <div v-el:table-body class="fixed-table-body table-responsive" :style="{height: height - toolbarHeight - paginationHeight+'px', width:width+'px'}"> -->
+        <!-- <div class="fixed-table-loading">
+        this.options.formatLoadingMessage()
+        </div> -->
+        <!-- <table class="table table-bordered table-striped table-hover table-condensed" :style="{'margin-top': 0-headerHeight+'px'}"> -->
+        <table class="table table-bordered table-striped table-hover table-condensed">
+          <thead v-el:table-thead>
+            <tr v-for="row in columns">
+              <th v-for="column in row"
+                  :rowspan="column.rowspan"
+                  :colspan="column.colspan"
+                  :style="column.style"
+                  :class="{'bs-checkbox': column.checkbox}">
+                <div>{{column.title}}</div>
+              </th>
+            </tr>
+          </thead>
+          <!-- 数据 -->
+          <tbody class="fixed-talbe-tbody" style="width:800px" :style="{height: height - toolbarHeight - paginationHeight + 'px'}" v-el:table-tbody>
+            <tr v-for="row in showData" :class="{'success': row[idfield]==selectRow[idfield]}" @click="selectRow = row">
+              <td v-for="col in tempColumns" :class="{'bs-checkbox': col.checkbox}" :style="col.style">
+                <div v-if="col.checkbox"><input type="checkbox" :value="row[idfield]" v-model="checkedItems"/></div>
+                <div v-else>{{row[col.field]}}</div>
+              </td>
             </tr>
           </tbody>
+          </div>
         </table>
       </div>
       <div class="fixed-table-footer"><table><tr></tr></table></div>
-      <div class="fixed-table-pagination" v-if="paginationVAlign === 'bottom' || paginationVAlign === 'both'" v-el:pagination></div>
+      <div class="fixed-table-pagination"  :style="{height: paginationHeight+'px'}" style="display: block;" v-if="paginationVAlign === 'bottom' || paginationVAlign === 'both'" v-el:pagination>
+        <div class="pull-right pagination-detail">
+          <span class="pagination-info">总记录数:{{totalRows}}&nbsp;&nbsp;当前:{{fromRow}}-{{toRow}}&nbsp;&nbsp;</span>
+          <span class="page-list">
+            每页显示
+            <span class="btn-group dropup">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <span class="page-size">{{pageSize}}</span>
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                <li v-for="value in pageList" @click="changePageSize(pageList[$index])" :class="{active: pageList[$index] == pageSize}"><a href="javascript:void(0)">{{pageList[$index]}}</a></li>
+              </ul>
+            </span>
+            条
+          </span>
+        </div>
+        <div class="pull-left pagination">
+          <ul class="pagination">
+            <li class="page-first"><a href="#" @click="firstPage"><<</a></li>
+            <li class="page-pre"><a href="#" @click="prevPage"><</a></li>
+            <li class="page-next"><a href="#" @click="nextPage">></a></li>
+            <li class="page-last"><a href="#" @click="lastPage">>></a></li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import 'bootstrap/js/dropdown.js'
+import Ps from 'perfect-scrollbar'
+import 'perfect-scrollbar/dist/css/perfect-scrollbar.css'
+
+import Modal from './Modal.vue'
+import Aside from './Aside.vue'
+import BaseForm from './BaseForm.vue'
+
+var cachedWidth = null;
+
 // it only does '%s', and return '' when arguments are undefined
 var sprintf = function (str) {
     var args = arguments,
@@ -74,6 +253,17 @@ var sprintf = function (str) {
         return arg;
     });
     return flag ? str : '';
+};
+var getFieldIndex = function (columns, field) {
+  var index = -1;
+  $.each(columns, function (i, column) {
+    if (column.field === field) {
+      index = i;
+      return false;
+    }
+    return true;
+  });
+  return index;
 };
 // http://jsfiddle.net/wenyi/47nz7ez9/3/
 var setFieldIndex = function (columns) {
@@ -116,35 +306,13 @@ var setFieldIndex = function (columns) {
         }
     }
 };
-var getScrollBarWidth = function () {
-  if (cachedWidth === null) {
-    var inner = $('<p/>').addClass('fixed-table-scroll-inner'),
-        outer = $('<div/>').addClass('fixed-table-scroll-outer'),
-        w1, w2;
-
-    outer.append(inner);
-    $('body').append(outer);
-
-    w1 = inner[0].offsetWidth;
-    outer.css('overflow', 'scroll');
-    w2 = inner[0].offsetWidth;
-
-    if (w1 === w2) {
-      w2 = outer[0].clientWidth;
-    }
-
-    outer.remove();
-    cachedWidth = w1 - w2;
-  }
-  return cachedWidth;
-};
 var getRealHeight = function ($el) {
     var height = 0;
     var children = $el.children
     $el.children().each(function () {
-        if (height < $(this).outerHeight(true)) {
-            height = $(this).outerHeight(true);
-        }
+      if (height < $(this).outerHeight(true)) {
+        height = $(this).outerHeight(true);
+      }
     });
     // for(var index in $el.children) {
     //   if (height < children[index].offsetHeight) {
@@ -170,8 +338,9 @@ export default {
     // sortOrder: 'asc',
     striped: { type: Boolean, default: false },
     border: { type: Boolean, default: true },
-    columns: { type: Array, default: function(){return [[]]} },
-    data: { type: Array, default: function(){return []} },
+    columns: { type: Array, default: function(){return [[]]} },//表头描述，关联数据列
+    data: { type: Array, default: function(){return []} },//全部数据
+    idfield: { type: String, default: undefined },
     // dataField: 'rows',
     // method: 'get',
     url: { type: String, default: undefined },
@@ -190,10 +359,7 @@ export default {
     // pagination: false,
     // onlyInfoPagination: false,
     // sidePagination: 'client', // client or server
-    // totalRows: 0, // server side need to set
-    // pageNumber: 1,
-    // pageSize: 10,
-    // pageList: [10, 25, 50, 100],
+    totalRows: { type: Number, default: 0 },//记录数
     // paginationHAlign: 'right', //right, left
     paginationVAlign: { type: String, default: 'bottom'}, //bottom, top, both
     // paginationDetailHAlign: 'left', //right, left
@@ -214,7 +380,7 @@ export default {
     // buttonsAlign: 'right',
     // smartDisplay: true,
     // minimumCountColumns: 1,
-    // idField: undefined,
+    
     // uniqueId: undefined,
     // cardView: false,
     // detailView: false,
@@ -246,6 +412,10 @@ export default {
   },
   data () {
     return {
+      toolbarHeight: 35,
+      headerHeight: 0,//表头高度，用于调整表格高度
+      // tableHeight: 0,//表格高度
+      paginationHeight: 40,//分页高度，用于调整表格高度
       // $tableContainer: $(this.$el).find('.fixed-table-container'),
       // $tableHeader: $(this.$el).find('.fixed-table-header'),
       // $tableBody: $(this.$el).find('.fixed-table-body'),
@@ -258,70 +428,125 @@ export default {
       tableStriped: 'table-striped',
       tableNoBordered: 'table-no-bordered',
 
-      header: []
-      // columnOptions: {
-      //   radio: false,
-      //   checkbox: false,
-      //   checkboxEnabled: true,
-      //   field: undefined,
-      //   title: undefined,
-      //   titleTooltip: undefined,
-      //   'class': undefined,
-      //   align: undefined, // left, right, center
-      //   halign: undefined, // left, right, center
-      //   falign: undefined, // left, right, center
-      //   valign: undefined, // top, middle, bottom
-      //   width: undefined,
-      //   sortable: false,
-      //   order: 'asc', // asc, desc
-      //   visible: true,
-      //   switchable: true,
-      //   clickToSelect: true,
-      //   formatter: undefined,
-      //   footerFormatter: undefined,
-      //   events: undefined,
-      //   sorter: undefined,
-      //   sortName: undefined,
-      //   cellStyle: undefined,
-      //   searchable: true,
-      //   searchFormatter: true,
-      //   cardVisible: true
-      // }
+      showRight: false,
+      searchModal: false,
+
+      pageNumber: 1,
+      pageSize: 10,
+      pageList: [10, 25, 50, 100],
+      totalPages: 0,
+
+      showData: [],//当前显示的数据
+      tempColumns: [],//扁平化的列描述，将符合表头描述整理成1维数组
+      header: [],//列属性、样式、事件等
+      checkedItems: [],//选择的行
+      selectRow: {},
+      columnOptions: {
+        radio: false,
+        checkbox: false,
+        checkboxEnabled: true,
+        field: undefined,
+        title: undefined,
+        titleTooltip: undefined,
+        'class': undefined,
+        align: 'center', // left, right, center
+        halign: undefined, // left, right, center
+        falign: undefined, // left, right, center
+        valign: 'middle', // top, middle, bottom
+        width: 60,//undefined,
+        sortable: false,
+        order: 'asc', // asc, desc
+        visible: true,
+        switchable: true,
+        clickToSelect: true,
+        formatter: undefined,
+        footerFormatter: undefined,
+        events: undefined,
+        sorter: undefined,
+        sortName: undefined,
+        cellStyle: undefined,
+        searchable: true,
+        searchFormatter: true,
+        cardVisible: true
+      }
     }
   },
   components: {
+    'modal': Modal,
+    'aside': Aside,
+    'base-form': BaseForm
   },
   watch: {
-  },
-  computed: {
-    scrollWidth: function() {
-      var fixedBody = this.$els.tableBody.children[0];
-      return fixedBody.scrollWidth > fixedBody.clientWidth &&
-        fixedBody.scrollHeight > fixedBody.clientHeight + this.$els.tableHeader.offsetHeight ?
-            getScrollBarWidth() : 0;
+    'height': function() {//表格高度变化后更新滚动条
+      Ps.update(this.$els.tableBody);
     },
-    tableHeight: function() {
-      var toolbarHeight = getRealHeight($(this.$els.toolbar)),
-          paginationHeight = getRealHeight($(this.$els.pagination))
-      return this.height - toolbarHeight - paginationHeight
-    },
-    headerHeight: function() {
-      return 0 - this.$els.tableHeader.offsetHeight
-    },
-    viewData: function() {
-      var result
-      for(var row in this.data) {
-
-      }
-      result = this.data
-      return result
+    'width': function() {
+      Ps.update(this.$els.tableBody);
     }
   },
-  ready() {
-    setFieldIndex(this.columns)
+  computed: {
+    fromRow: function() {
+      return this.pageSize * (this.pageNumber-1) + 1
+    },
+    toRow: function() {
+      return this.pageSize * (this.pageNumber)
+    },
+    totalPages: function() {
+      return ~~((this.totalRows - 1) / this.pageSize) + 1;
+    }
+  },
+  compiled() {
+    //处理数据
+    this.initData()
+    this.initTable()
     this.initHeader()
   },
+  ready() {
+    this.$nextTick(function() {
+      // this.headerHeight = this.$els.tableThead.offsetHeight
+      // // this.headerHeight = this.$els.tableHeader.offsetHeight
+      // this.paginationHeight = getRealHeight($(this.$els.pagination))
+      // console.log(this.paginationHeight)
+      // this.toolbarHeight = getRealHeight($(this.$els.toolbar))
+      // console.log(this.toolbarHeight)
+      // this.tableHeight = this.height - this.toolbarHeight - this.paginationHeight
+      
+      
+    })
+    // Ps.initialize(this.$els.tableBody, {suppressScrollY: true});
+    Ps.initialize(this.$els.tableTbody, {suppressScrollX: true});
+  },
   methods: {
+    fitHead: function() {
+
+    },
+    initData: function() {
+      var that = this
+      if(this.data && this.data.length > 0) {
+        that.showData = that.data.slice((this.pageNumber-1)*this.pageSize,this.pageNumber*this.pageSize)
+      } else {
+        $.get(this.url,function(data,status) {
+          if(status == 'success') {
+            that.data = data.data
+            that.showData = that.data.slice(0,that.pageSize)
+            that.totalRows = data.total
+          }
+        });
+      }
+    },
+    initTable: function () {
+      setFieldIndex(this.columns)
+      var that = this
+      $.each(this.columns, function (i, columns) {
+        $.each(columns, function (j, column) {
+          column = $.extend({}, that.columnOptions, column);
+          if (typeof column.fieldIndex !== 'undefined') {
+            that.tempColumns.$set(column.fieldIndex, column);
+          }
+          that.columns[i].$set(j, column)
+        });
+      });
+    },
     initHeader: function () {
       var that = this,
           visibleColumns = {},
@@ -338,7 +563,6 @@ export default {
           cellStyles: [],
           searchables: []
       };
-
       $.each(this.columns, function (i, columns) {
           // html.push('<tr>');
 
@@ -357,12 +581,12 @@ export default {
                   unitWidth = 'px',
                   width = column.width;
 
-              if (column.width !== undefined && (!that.options.cardView)) {
-                  if (typeof column.width === 'string') {
-                      if (column.width.indexOf('%') !== -1) {
-                          unitWidth = '%';
-                      }
+              if (column.width !== undefined) {
+                if (typeof column.width === 'string') {
+                  if (column.width.indexOf('%') !== -1) {
+                    unitWidth = '%';
                   }
+                }
               }
               if (column.width && typeof column.width === 'string') {
                   width = column.width.replace('%', '').replace('px', '');
@@ -371,32 +595,109 @@ export default {
               halign = sprintf('text-align: %s; ', column.halign ? column.halign : column.align);
               align = sprintf('text-align: %s; ', column.align);
               style = sprintf('vertical-align: %s; ', column.valign);
-              style += sprintf('width: %s; ', (column.checkbox || column.radio) && !width ?
+              style += sprintf('width: %s; ', (column.checkbox || column.radio)?
                   '36px' : (width ? width + unitWidth : undefined));
 
               if (typeof column.fieldIndex !== 'undefined') {
-                  that.header.fields[column.fieldIndex] = column.field;
-                  that.header.styles[column.fieldIndex] = align + style;
-                  that.header.classes[column.fieldIndex] = class_;
-                  that.header.formatters[column.fieldIndex] = column.formatter;
-                  that.header.events[column.fieldIndex] = column.events;
-                  that.header.sorters[column.fieldIndex] = column.sorter;
-                  that.header.sortNames[column.fieldIndex] = column.sortName;
-                  that.header.cellStyles[column.fieldIndex] = column.cellStyle;
-                  that.header.searchables[column.fieldIndex] = column.searchable;
+                that.header.fields[column.fieldIndex] = column.field;
+                that.header.styles[column.fieldIndex] = align + style;
+                that.header.classes[column.fieldIndex] = class_;
+                that.header.formatters[column.fieldIndex] = column.formatter;
+                that.header.events[column.fieldIndex] = column.events;
+                that.header.sorters[column.fieldIndex] = column.sorter;
+                that.header.sortNames[column.fieldIndex] = column.sortName;
+                that.header.cellStyles[column.fieldIndex] = column.cellStyle;
+                that.header.searchables[column.fieldIndex] = column.searchable;
 
-                  if (!column.visible) {
-                      return;
-                  }
+                if (!column.visible) {
+                    return;
+                }
 
-                  // if (that.options.cardView && (!column.cardVisible)) {
-                  //     return;
-                  // }
+                // if (that.options.cardView && (!column.cardVisible)) {
+                //     return;
+                // }
 
-                  visibleColumns[column.field] = column;
+                visibleColumns[column.field] = column;
               }
+              if (column.checkbox) {
+                that.header.stateField = column.field;
+              }
+
+              column.style = halign + style
+              // sprintf(' style="%s"', halign + style),
+              // sprintf(' rowspan="%s"', column.rowspan),
+              // sprintf(' colspan="%s"', column.colspan),
+              // sprintf(' data-field="%s"', column.field),
+              // "tabindex='0'",
+              // '>');
+              // html.push(sprintf('<div class="th-inner %s">', that.options.sortable && column.sortable ?
+              //       'sortable both' : ''));
           });
       });
+    },
+    columnClickHandle: function(column,event) {
+      if(column.checkbox) {
+        var rows;
+        
+        // if (!checked) {
+        //     rows = this.getSelections();
+        // }
+        // this.$selectAll.add(this.$selectAll_).prop('checked', checked);
+        // this.$selectItem.filter(':enabled').prop('checked', checked);
+        // this.updateRows();
+        // if (checked) {
+        //     rows = this.getSelections();
+        // }
+        // this.trigger(checked ? 'check-all' : 'uncheck-all', rows);
+      } else {
+        sortBy(key)
+      }
+    },
+    headCheckHandle: function(event) {
+      this.checkedItems = []
+      if(event.target.checked) {
+        for(var index = 0; index < this.data.length; index++) {
+          this.checkedItems.push(this.data[index][this.idfield])
+        }
+      }
+    },
+    firstPage: function() {
+      this.pageNumber = 1
+      this.initData()
+    },
+    prevPage: function () {
+      if (this.pageNumber > 1) {
+        this.pageNumber--
+        this.initData()
+      }
+    },
+    nextPage: function () {
+      if (this.pageNumber < this.totalPages) {
+        this.pageNumber++
+        this.initData()
+      }
+    },
+    lastPage: function() {
+      this.pageNumber = this.totalPages
+      this.initData()
+    },
+    changePageSize: function (value) {
+      this.pageSize = value
+      this.initData()
+    },
+    showForm: function(type) {
+      switch(type) {
+        case 'add':
+          this.formType = 'add';
+          break;
+        case 'edit':
+          this.formType = 'edit';
+          break;
+      };
+      this.showRight = true;
+    },
+    query: function() {
+
     }
   },
   events: {

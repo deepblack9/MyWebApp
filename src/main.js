@@ -14,6 +14,7 @@ Vue.config.debug = true;
 var root = new Vue({
   el: 'body',
   data: {
+    width: 0,
   	height: 0
   },
   components: {
@@ -94,8 +95,10 @@ layer.config({
 // $("#sidebar").slimScroll({width:'200px',height: '100%'})
 
 window.onload = function(){
+  root.width = window.innerWidth;
   root.height = window.innerHeight;
 }
 window.onresize = function(){
+  root.width = window.innerWidth;
   root.height = window.innerHeight;
 }

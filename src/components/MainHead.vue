@@ -5,6 +5,7 @@
 <template>
   <div class="row" id="head" :style="{height: height + 'px'}">
     <div class="col-md-12">{{msg}}</div>
+    <slot></slot>
   </div>
 </template>
 
