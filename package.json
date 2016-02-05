@@ -26,6 +26,7 @@
     "vue-hot-reload-api": "^1.2.2",
     "vue-loader": "^7.2.0",
     "vue-resource": "^0.5.1",
+    "vuex": "^0.2.0",
     "webpack": "^1.12.9",
     "webpack-dev-server": "^1.14.0"
   },

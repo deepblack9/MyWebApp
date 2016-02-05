@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import BaseForm from '../base/BaseForm.vue'
+import BaseForm from '../base/FormBase.vue'
 
 export default {
   props: {

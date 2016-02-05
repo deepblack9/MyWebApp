@@ -15,119 +15,102 @@
   text-align: center;
   padding: 5px 0;
 }
+.fixed-table-header {
+  overflow: hidden;
+}
 .fixed-table-body {
-  overflow-x: hidden;
-  overflow-y: hidden;
-  /*border-left: 1px solid #dddddd;*/
-  border-right: 1px solid #dddddd;
-  border-bottom: 1px solid #dddddd;
+  border: 1px solid #ddd;
+  margin-top:-1px;
+  overflow: auto;
   position: relative;
 }
-.fixed-talbe-tbody {
-  position: relative;
-}
-#table thead, #table tbody, #table tr {
-  display: block;
-  width: 600px;
-  border-spacing: 0;
-  border-collapse: collapse;
-}
-#table tbody {
-  height: 100px;
-  overflow-y: auto;
-  overflow-x:hidden;
-  position: relative;
-}
-#table tbody td, #table thead th {
-  display: block;
-  border: 1px solid black;
-  width: 200px;
-  float: left;
-  box-sizing: border-box;
-}
-
 .fixed-table-toolbar .dropdown-menu {
-    text-align: left;
-    max-height: 300px;
-    overflow: auto;
+  text-align: left;
+  max-height: 300px;
+  overflow: auto;
 }
-
 .fixed-table-toolbar .btn-group > .btn-group {
-    display: inline-block;
-    margin-left: -1px !important;
+  display: inline-block;
+  margin-left: -1px !important;
 }
 
 .fixed-table-toolbar .btn-group > .btn-group > .btn {
-    border-radius: 0;
+  border-radius: 0;
 }
-
 .fixed-table-toolbar .btn-group > .btn-group:first-child > .btn {
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
 }
-
 .fixed-table-toolbar .btn-group > .btn-group:last-child > .btn {
-    border-top-right-radius: 4px;
-    border-bottom-right-radius: 4px;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
 }
-
 .fixed-table-pagination div.pagination,
 .fixed-table-pagination .pagination-detail {
   margin-top: 5px;
   margin-bottom: 0px;
 }
-
 .fixed-table-pagination div.pagination .pagination {
   margin: 0;
 }
-
 .fixed-table-pagination .pagination a {
   padding: 6px 12px;
   line-height: 1.428571429;
 }
-
 .fixed-table-pagination .pagination-info {
   line-height: 34px;
   margin-right: 5px;
 }
-
 .fixed-table-pagination .btn-group {
   position: relative;
   display: inline-block;
   vertical-align: middle;
 }
-
 .fixed-table-pagination .dropup .dropdown-menu {
   margin-bottom: 0;
 }
-
 .fixed-table-pagination .page-list {
   display: inline-block;
 }
-
 </style>
 
 <template>
   <div class="bootstrap-table" :class="[classes?classes:'table',classes?classes:'table-hover', striped?tableStriped:'', border?'':tableNoBordered]" :style="{height: height + 'px'}">
-    <div class="fixed-table-toolbar" :style="{height:toolbarHeight+'px'}" v-el:toolbar>
+    <div class="fixed-table-toolbar" v-el:toolbar>
       <div class="btn-group">
-        <button id="table-add" class="btn btn-default" @click="showForm('add')">
+        <button id="table-add" class="btn btn-default" @click="showFormModal('add')">
           <i class="fa fa-plus"></i>
         </button>
-        <button id="table-edit" class="btn btn-default" @click="showForm('edit')" disabled>
+        <button id="table-edit" class="btn btn-default" @click="showFormModal('edit')">
           <i class="fa fa-pencil"></i>
         </button>
-        <aside :show.sync="showRight" placement="right" header="Title" :width="350">
-          <base-form v-if="formType=='add'" :col="1" :record="{}">
-          </base-form>
-          <base-form v-if="formType=='edit'" :col="1" :record="record">
-          </base-form>
-          <!-- <div class="aside-footer">
-            <button type="button" class="btn btn-default" @click="showRight = false">Close</button>
-          </div> -->
-        </aside>
-        <button id="table-remove" class="btn btn-default" disabled>
+        <form-modal 
+          title="编辑角色"
+          :show.sync="showForm" 
+          effect="zoom" 
+          :width="500" 
+          :col="1" 
+          :fields="formFields" 
+          :url="saveUrl" 
+          :record="formType=='edit'?selectRow:{}" 
+          :model-name="modelName" 
+          @after-submit="afterSubmit">
+        </form-modal>
+        <!-- <modal >
+          <div class="modal-body" slot="modal-body">
+            <form-modal :col="1" :fields="formFields" :url="saveUrl" :record="formType=='edit'?selectRow:{}" :model-name="modelName" v-ref:data-form>
+            </form-modal>
+          </div>
+          <div class="modal-footer" slot="modal-footer">
+            <button type="button" class="btn btn-primary" @click="saveRecord">保存</button>
+            <button type="button" class="btn btn-default" @click="showForm = false">取消</button>
+          </div>
+        </modal> -->
+        <button id="table-remove" class="btn btn-default" @click="remove">
           <i class="glyphicon glyphicon-remove"></i>
+        </button>
+        <button id="table-remove" class="btn btn-default" @click="refresh">
+          <i class="glyphicon glyphicon-refresh"></i>
         </button>
         <button id="table-search" class="btn btn-default" @click="searchModal = true">
           <i class="glyphicon glyphicon-search"></i>
@@ -137,8 +120,8 @@
                effect="zoom" 
                :width="800">
           <div class="modal-body" slot="modal-body">
-            <base-form :col="3">
-            </base-form>
+            <form-modal :col="3">
+            </form-modal>
           </div>
           <div class="modal-footer" slot="modal-footer">
             <button type="button" class="btn btn-primary" @click="query">查询</button>
@@ -147,52 +130,38 @@
       </div>
       <slot name="toolbar"></slot>
     </div>
-    <div class="fixed-table-container" :class="[border?'':'table-no-bordered']" :Style="{height: height - toolbarHeight - paginationHeight + 'px'}">
-      <div class="fixed-table-header" v-show='showHeader' v-el:table-header>
-        <!-- <table class="table table-bordered table-striped table-hover table-condensed">
+    <div v-el:table-container class="fixed-table-container">
+      <div v-el:table-header class="fixed-table-header" v-show='showHeader'>
+        <table class="table table-bordered table-striped table-hover table-condensed">
           <thead>
             <tr v-for="row in columns">
               <th v-for="column in row"
                   @click="columnClickHandle(column)"
                   :rowspan="column.rowspan"
                   :colspan="column.colspan"
-                  :style="column.checkbox?column.style:''"
+                  :style="column.style"
                   :class="{'bs-checkbox': column.checkbox}">
                 <div v-if="column.checkbox"><input name="btSelectAll" type="checkbox" @click="headCheckHandle"/></div>
                 <div v-else>{{column.title}}</div>
               </th>
             </tr>
           </thead>
-        </table> -->
+        </table>
       </div>
-      <div v-el:table-body class="fixed-table-body table-responsive" :style="{height: height - toolbarHeight - paginationHeight + 'px'}" style="width:800px">
-      <!-- <div v-el:table-body class="fixed-table-body table-responsive" :style="{height: height - toolbarHeight - paginationHeight+'px', width:width+'px'}"> -->
+      <div v-el:table-body class="fixed-table-body table-responsive"
+          :style="{height: height - toolbarHeight - paginationHeight - headerHeight + 'px'}" @scroll="scroll">
         <!-- <div class="fixed-table-loading">
-        this.options.formatLoadingMessage()
+        this.formatLoadingMessage()
         </div> -->
-        <!-- <table class="table table-bordered table-striped table-hover table-condensed" :style="{'margin-top': 0-headerHeight+'px'}"> -->
-        <table class="table table-bordered table-striped table-hover table-condensed">
-          <thead v-el:table-thead>
-            <tr v-for="row in columns">
-              <th v-for="column in row"
-                  :rowspan="column.rowspan"
-                  :colspan="column.colspan"
-                  :style="column.style"
-                  :class="{'bs-checkbox': column.checkbox}">
-                <div>{{column.title}}</div>
-              </th>
-            </tr>
-          </thead>
-          <!-- 数据 -->
-          <tbody class="fixed-talbe-tbody" style="width:800px" :style="{height: height - toolbarHeight - paginationHeight + 'px'}" v-el:table-tbody>
-            <tr v-for="row in showData" :class="{'success': row[idfield]==selectRow[idfield]}" @click="selectRow = row">
+        <table class="table table-bordered table-striped table-hover table-condensed" style="margin-top:-1px">
+          <tbody class="fixed-talbe-tbody" :style="{height: height - toolbarHeight - paginationHeight + 'px'}" v-el:table-tbody>
+            <tr v-for="row in showData" :class="{'success': selectRow?row[idfield]==selectRow[idfield]:false}" @click="selectRow = row">
               <td v-for="col in tempColumns" :class="{'bs-checkbox': col.checkbox}" :style="col.style">
                 <div v-if="col.checkbox"><input type="checkbox" :value="row[idfield]" v-model="checkedItems"/></div>
                 <div v-else>{{row[col.field]}}</div>
               </td>
             </tr>
           </tbody>
-          </div>
         </table>
       </div>
       <div class="fixed-table-footer"><table><tr></tr></table></div>
@@ -231,9 +200,13 @@ import 'bootstrap/js/dropdown.js'
 import Ps from 'perfect-scrollbar'
 import 'perfect-scrollbar/dist/css/perfect-scrollbar.css'
 
+import store from '../../store'
+const { showAlert, showConfirm, hideConfirm } = store.actions
+
+// import Alert from './Alert.vue'
 import Modal from './Modal.vue'
 import Aside from './Aside.vue'
-import BaseForm from './BaseForm.vue'
+import FormModal from './FormModal.vue'
 
 var cachedWidth = null;
 
@@ -328,6 +301,7 @@ var getRealHeight = function ($el) {
 };
 export default {
   props: {
+    width: Number,
     height: Number,
 
     classes: { type: String, default: undefined },
@@ -339,11 +313,16 @@ export default {
     striped: { type: Boolean, default: false },
     border: { type: Boolean, default: true },
     columns: { type: Array, default: function(){return [[]]} },//表头描述，关联数据列
+    formFields: { type: Array, default: function() {return []} },//数据表单描述
+    modelName: { type: String, default: undefined },//模型名称
     data: { type: Array, default: function(){return []} },//全部数据
     idfield: { type: String, default: undefined },
     // dataField: 'rows',
     // method: 'get',
-    url: { type: String, default: undefined },
+    queryUrl: { type: String, default: undefined },
+    getUrl: { type: String, default: undefined },
+    saveUrl: { type: String, default: undefined },
+    delUrl: { type: String, default: undefined },
     // ajax: undefined,
     cache: { type: Boolean, default: true },
     contentType: { type: String, default: 'application/json' },
@@ -359,7 +338,6 @@ export default {
     // pagination: false,
     // onlyInfoPagination: false,
     // sidePagination: 'client', // client or server
-    totalRows: { type: Number, default: 0 },//记录数
     // paginationHAlign: 'right', //right, left
     paginationVAlign: { type: String, default: 'bottom'}, //bottom, top, both
     // paginationDetailHAlign: 'left', //right, left
@@ -412,6 +390,12 @@ export default {
   },
   data () {
     return {
+      alertType: 'info',
+      alertShow: false,
+      alertMsg: '',
+
+      confirmShow: false,
+
       toolbarHeight: 35,
       headerHeight: 0,//表头高度，用于调整表格高度
       // tableHeight: 0,//表格高度
@@ -428,19 +412,21 @@ export default {
       tableStriped: 'table-striped',
       tableNoBordered: 'table-no-bordered',
 
-      showRight: false,
+      formType: '',//表单类型（增加、修改）
+
+      showForm: false,
       searchModal: false,
 
       pageNumber: 1,
       pageSize: 10,
       pageList: [10, 25, 50, 100],
       totalPages: 0,
-
+      totalRows: 0,//记录数
       showData: [],//当前显示的数据
       tempColumns: [],//扁平化的列描述，将符合表头描述整理成1维数组
       header: [],//列属性、样式、事件等
-      checkedItems: [],//选择的行
-      selectRow: {},
+      checkedItems: [],//checkbox选择的行
+      selectRow: undefined,//当前选择行
       columnOptions: {
         radio: false,
         checkbox: false,
@@ -474,7 +460,8 @@ export default {
   components: {
     'modal': Modal,
     'aside': Aside,
-    'base-form': BaseForm
+    'form-modal': FormModal
+    // 'alert': Alert
   },
   watch: {
     'height': function() {//表格高度变化后更新滚动条
@@ -504,34 +491,98 @@ export default {
   ready() {
     this.$nextTick(function() {
       // this.headerHeight = this.$els.tableThead.offsetHeight
-      // // this.headerHeight = this.$els.tableHeader.offsetHeight
-      // this.paginationHeight = getRealHeight($(this.$els.pagination))
-      // console.log(this.paginationHeight)
-      // this.toolbarHeight = getRealHeight($(this.$els.toolbar))
-      // console.log(this.toolbarHeight)
-      // this.tableHeight = this.height - this.toolbarHeight - this.paginationHeight
-      
-      
+      // this.headerHeight = this.$els.tableHeader.offsetHeight
+      this.headerHeight = getRealHeight($(this.$els.tableHeader))
+      this.paginationHeight = getRealHeight($(this.$els.pagination))
+      this.toolbarHeight = getRealHeight($(this.$els.toolbar))
+      this.tableHeight = this.height - this.toolbarHeight - this.paginationHeight
+      Ps.initialize(this.$els.tableBody);
     })
-    // Ps.initialize(this.$els.tableBody, {suppressScrollY: true});
-    Ps.initialize(this.$els.tableTbody, {suppressScrollX: true});
   },
   methods: {
-    fitHead: function() {
-
+    refresh: function() {
+      console.log('refresh')
+      this.data = []
+      this.showData = []
+      this.initData()
+    },
+    scroll: function(event) {
+      this.$els.tableHeader.scrollLeft = event.target.scrollLeft
     },
     initData: function() {
       var that = this
       if(this.data && this.data.length > 0) {
-        that.showData = that.data.slice((this.pageNumber-1)*this.pageSize,this.pageNumber*this.pageSize)
+        this.showData = that.data.slice((this.pageNumber-1)*this.pageSize,this.pageNumber*this.pageSize)
+        this.checkedItems = []
       } else {
-        $.get(this.url,function(data,status) {
-          if(status == 'success') {
-            that.data = data.data
-            that.showData = that.data.slice(0,that.pageSize)
-            that.totalRows = data.total
+        if(this.queryUrl) {
+          $.get(this.queryUrl,function(data,status) {
+            if(status == 'success') {
+              that.data = data.data
+              that.showData = that.data.slice(0,that.pageSize)
+              that.totalRows = data.total
+            }
+          });
+        }
+      }
+    },
+    remove: function() {
+      var that = this
+      if(this.checkedItems && this.checkedItems.length) {
+        showConfirm('确定删除'+this.checkedItems.length+'条数据？', function(){
+          $.ajax({  
+            type: 'post',
+            traditional: true,
+            url: that.delUrl,
+            data: { 'ids': that.checkedItems },
+            success: function(data,status){
+              if(status == 'success') {
+                that.refresh()
+                // for(var index = 0; index < that.showData.length; index++) {
+                //   for(var idIndex = 0; idIndex < that.checkedItems.length; idIndex++) {
+                //     if(that.checkedItems[idIndex] == that.showData[index][that.idfield]) {
+                //       that.showData.$remove(that.showData[index])
+                //     }
+                //   }
+                // }
+                // that.totalRows = that.totalRows - that.checkedItems.length
+                showAlert('success','删除成功！')
+              } else {
+                showAlert('danger','删除失败！')
+              }
+            }
+          })
+          hideConfirm()
+        })
+      } else if(this.selectRow) {
+        showConfirm('确定删除1条数据？', function() {
+            $.ajax({
+              type: 'post',  
+              traditional: true,  
+              url: that.delUrl,  
+              data: { 'ids': that.selectRow[that.idfield] },
+              success: function(data,status){
+                if(status == 'success') {
+                  that.refresh()
+                  // for(var index = 0; index < that.showData.length; index++) {
+                  //   for(var idIndex = 0; idIndex < that.checkedItems.length; idIndex++) {
+                  //     if(that.checkedItems[idIndex] == that.showData[index][that.idfield]) {
+                  //       that.showData.$remove(that.showData[index])
+                  //     }
+                  //   }
+                  // }
+                  // that.totalRows = that.totalRows - that.checkedItems.length
+                  showAlert('success','删除成功！')
+                } else {
+                  showAlert('danger','删除失败！')
+                }
+              }
+            })
+            hideConfirm()
           }
-        });
+        )
+      } else {
+        showAlert('warning','请选择一条数据！')
       }
     },
     initTable: function () {
@@ -650,7 +701,7 @@ export default {
         // }
         // this.trigger(checked ? 'check-all' : 'uncheck-all', rows);
       } else {
-        sortBy(key)
+        // sortBy(key)
       }
     },
     headCheckHandle: function(event) {
@@ -685,16 +736,29 @@ export default {
       this.pageSize = value
       this.initData()
     },
-    showForm: function(type) {
+    showFormModal: function(type) {
       switch(type) {
         case 'add':
           this.formType = 'add';
+          this.showForm = true;
           break;
         case 'edit':
-          this.formType = 'edit';
-          break;
+          if(this.selectRow) {
+            this.formType = 'edit';
+            this.showForm = true;
+          } else {
+            showAlert('warning','请选择一条数据！')
+          }
+        break;
       };
-      this.showRight = true;
+    },
+    afterSubmit: function() {
+      if(this.formType == 'add') {
+        this.data.push(this.selectRow)
+        this.refresh()
+      } else if(this.formType == 'edit') {
+
+      }
     },
     query: function() {
 

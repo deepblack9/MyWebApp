@@ -20,8 +20,8 @@
         </slot>
         <slot name="modal-footer">
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" @click="close">Close</button>
-            <button type="button" class="btn btn-primary" @click="callback">Save changes</button>
+            <button type="button" class="btn btn-primary" @click="callback">确定</button>
+            <button type="button" class="btn btn-default" @click="close">取消</button>
           </div>
         </slot>
       </div>
@@ -68,8 +68,8 @@ import EventListener from './utils/EventListener.js'
         default: false
       }
     },
-    watch: {
-      show(val) {
+    ready() {
+      this.$watch('show', (val)=> {
         const el = this.$el
         const body = document.body
         const scrollBarWidth =  getScrollBarWidth()
@@ -95,7 +95,7 @@ import EventListener from './utils/EventListener.js'
             body.style.paddingRight = '0'
           }, 300)
         }
-      }
+      }, { immediate: true })
     },
     computed: {
       optionalWidth: function() {

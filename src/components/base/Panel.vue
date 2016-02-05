@@ -1,23 +1,23 @@
 <template>
-<div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">
-        <a class="accordion-toggle"
-          @click="toggleIsOpen()">
-           {{ header }}
-        </a>
-      </h4>
-    </div>
-    <div class="panel-collapse"
-      v-el:panel
-      v-show="isOpen"
-      transition="collapse"
-    >
-      <div class="panel-body">
-        <slot></slot>
-      </div>
+<div class="panel panel-default" :style="{'height':height+'px'}">
+  <div class="panel-heading">
+    <h4 class="panel-title">
+      <a class="accordion-toggle"
+        @click="toggleIsOpen()">
+         {{ header }}
+      </a>
+      <slot name="header"></slot>
+    </h4>
+  </div>
+  <div class="panel-collapse"
+    v-el:panel
+    v-show="isOpen"
+    transition="collapse">
+    <div class="panel-body">
+      <slot name="body"></slot>
     </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -29,24 +29,28 @@
       },
       header: {
         type: String
+      },
+      height: {
+        type: Number,
+        default: undefined
       }
     },
     data() {
       return {
-        height: 0
+        // height: 0
       }
     },
     methods: {
       toggleIsOpen() {
-        this.isOpen = !this.isOpen
-        this.$dispatch('isOpenEvent', this)
+        // this.isOpen = !this.isOpen
+        // this.$dispatch('isOpenEvent', this)
       }
     },
     ready() {
       const panel = this.$els.panel
       panel.style.display = 'block'
-      this.height = panel.offsetHeight
-      panel.style.maxHeight = this.height + 'px'
+      // this.height = panel.offsetHeight
+      // panel.style.maxHeight = this.height + 'px'
       if (!this.isOpen) panel.style.display = 'none'
     }
   }
@@ -58,8 +62,8 @@
 }
 
 .collapse-transition {
-transition: max-height .5s ease;
-overflow: hidden;
+  transition: max-height .5s ease;
+  overflow: hidden;
 }
 
 .collapse-enter, .collapse-leave {

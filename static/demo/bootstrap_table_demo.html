@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--360浏览器优先以webkit内核解析-->
+    <title>主页示例</title>
+    <link rel="shortcut icon" href="favicon.ico">
+  	<link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/components/bootstrapTable/bootstrap-table.css">
+    <script src="../assets/js/jquery-1.11.3.min.js"></script>
+    <script src="../assets/js/bootstrap.min.js"></script>
+    <script src="../assets/components/bootstrapTable/bootstrap-table.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Table Style</h1>
+        <p>Use <code>height</code>, <code>classes</code>, <code>striped</code>, <code>rowStyle</code> options and <code>class</code>, <code>width</code>, <code>cellStyle</code> column options to set the styles of bootstrap table.</p>
+        <table data-toggle="table"
+               data-url="data.json"
+               data-height="400"
+               data-striped=true
+               >
+            <thead>
+            <tr>
+                <th data-field="id" class="col-md-2">Item ID</th>
+                <th data-field="name" class="col-md-6">
+                    <i class="glyphicon glyphicon-star"></i>
+                    Item Name
+                </th>
+                <th data-field="price" class="col-md-4">
+                    <i class="glyphicon glyphicon-heart"></i>
+                    Item Price
+                </th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+<script>
+//data-row-style="rowStyle"
+    function rowStyle(row, index) {
+        var classes = ['active', 'success', 'info', 'warning', 'danger'];
+        if (index % 2 === 0 && index / 2 < classes.length) {
+            return {
+                classes: classes[index / 2]
+            };
+        }
+        return {};
+    }
+</script>
+</body>
+</html>

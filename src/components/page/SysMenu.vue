@@ -32,32 +32,27 @@
       {{alertMsg}}
     </alert>
     <div class="col-md-6">
-      <div class="panel panel-default" :style="{height: height + 'px'}">
-        <div class="panel-heading">菜单列表
-          <div class="panel-tools btn-group pull-right">
-            <a @click="refresh"><i class="fa fa-refresh fa-lg"></i></a>
-            <a class="dropdown" data-toggle="dropdown"><i class="fa fa-plus fa-lg"></i></a>
-            <ul class="dropdown-menu" role="menu">
-              <li><a @click="addBrother">添加同级</a></li>
-              <li><a @click="addChild">添加下级</a></li>
-            </ul>
-            <a @click="deleteNode"><i class="fa fa-minus fa-lg"></i></a>
-          </div>
+      <panel v-el="treePanel" header="菜单编辑" :is-open="true" :height="height">
+        <div slot="header" class="panel-tools btn-group pull-right">
+          <a @click="refresh"><i class="fa fa-refresh fa-lg"></i></a>
+          <a class="dropdown" data-toggle="dropdown"><i class="fa fa-plus fa-lg"></i></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a @click="addBrother">添加同级</a></li>
+            <li><a @click="addChild">添加下级</a></li>
+          </ul>
+          <a @click="deleteNode"><i class="fa fa-minus fa-lg"></i></a>
         </div>
-        <div class="panel-body" :style="{height: height-30-14 + 'px'}">
-          <!-- <tree :treeData="treeData"></tree> -->
-          <tree>
-            <tree-item v-for="model in treeData" :model="model" @node-selected="treeNodeSelected"></tree-item>
-          </tree>
-        </div>
-      </div>
+        <tree slot="body">
+          <tree-item v-for="model in treeData" :model="model" @node-selected="treeNodeSelected"></tree-item>
+        </tree>
+      </panel>
     </div>
     <div class="col-md-6">
-      <panel header="菜单编辑" :isOpen="true" :height="height-30-14">
+      <panel v-el="formPanel" header="菜单编辑" :is-open="true" :height="height">
         <div slot="header" class="panel-tools pull-right">
           <a @click="saveMenu"><i class="fa fa-save fa-lg"></i></a>
         </div>
-        <base-form slot="body" :fields="formFields" :url="saveUrl" :record="currentNode" :col="1">
+        <base-form slot="body" :fields="formFields" :url="saveUrl" :record="currentNode" :col="1" v-ref:data-form>
         </base-form>
       </panel>
     </div>
@@ -65,13 +60,19 @@
 </template>
 
 <script>
-import layer from '../../libs/layer-v2.1/layer/layer.js'
+// import layer from '../../libs/layer-v2.1/layer/layer.js'
+import Ps from 'perfect-scrollbar'
+import 'perfect-scrollbar/dist/css/perfect-scrollbar.css'
+
 import Utils from '../../libs/utils.js'
 import Panel from '../base/Panel.vue'
 import Tree from '../base/Tree.vue'
 import TreeItem from '../base/TreeItem.vue'
-import BaseForm from '../base/BaseForm.vue'
+import BaseForm from '../base/FormBase.vue'
 import Alert from '../base/Alert.vue'
+
+import store from '../../store'
+const { showAlert, showConfirm, hideConfirm } = store.actions
 
 var formFields = [{name:'model.resourceId',mapping:'resourceId',fieldLabel:'resourceId',xtype:'hidden'},
     {name:'model.upResourceId',mapping:'upResourceId',fieldLabel:'父资源ID',maxLength:32,xtype:'hidden'},
@@ -163,13 +164,17 @@ export default {
     //   this.$set('currentNode.'+field.mapping,'')
     // }
   },
+  ready() {
+    // Ps.initialize(this.$els.treePanel);
+    // Ps.initialize(this.$els.formPanel);
+  },
   methods:{
-    showAlert: function(type,msg) {
-      this.alertShow = false
-        this.alertType = type
-        this.alertMsg = msg
-        this.alertShow = true
-    },
+    // showAlert: function(type,msg) {
+    //   this.alertShow = false
+    //   this.alertType = type
+    //   this.alertMsg = msg
+    //   this.alertShow = true
+    // },
     refresh: function() {
       var vm = this
       $.get(this.treeURL,function(data,status) {
@@ -194,7 +199,7 @@ export default {
         this.currentNode.expanded = true
         this.currentNode = node
       } else {
-        this.showAlert('warning','请选择一个节点！')
+        showAlert('warning','请选择一个节点！')
       }
     },
     addBrother: function() {
@@ -209,15 +214,13 @@ export default {
         }
         this.currentNode = node
       } else {
-        this.showAlert('warning','请选择一个节点！')
+        showAlert('warning','请选择一个节点！')
       }
     },
     deleteNode: function() {
       var vm = this
       if(!Utils.isEmpty(this.currentNode)) {
-        var confirm = layer.confirm('确定删除当前节点？', {
-          btn: ['删除','取消'] //按钮
-        }, function(){
+        showConfirm('确定删除当前节点？', function(){
           $.post(vm.deleteUrl,
             {
               'model.resourceId': vm.currentNode.resourceId
@@ -235,19 +238,17 @@ export default {
               }
             }
           );
-        }, function(){
-          layer.close(confirm)
-        });
-        
+          hideConfirm()
+        })
       } else {
-        alert('请选择一个节点！')
+        showAlert('warning','请选择一个节点！')
       }
     },
     saveMenu: function() {
       if(!Utils.isEmpty(this.currentNode))
-        this.$broadcast('form.save')
+        this.$refs.dataForm.submit()
       else {
-        this.showAlert('warning','请选择一个节点！')
+        showAlert('warning','请选择一个节点！')
       }
     },
     treeNodeSelected: function(currModel,parentModel) {
@@ -259,13 +260,13 @@ export default {
     'tree.nodeSelected': function(currModel,parentModel) {
       this.currentNode = currModel
       this.currentPNode = parentModel
-    },
-    'form.post.success': function() {
-      this.showAlert('success','节点保存成功！')
-    },
-    'form.post.error': function(msg) {
-      this.showAlert('danger',msg)
     }
+    // 'form.post.success': function() {
+    //   showAlert('success','节点保存成功！')
+    // },
+    // 'form.post.error': function(msg) {
+    //   showAlert('danger',msg)
+    // }
   }
 }
 </script>

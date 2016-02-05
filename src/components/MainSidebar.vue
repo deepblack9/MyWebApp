@@ -3,7 +3,7 @@
 </style>
 
 <template>
-  <div id="sidebar" :style="{width: width+'px'}">
+  <div id="sidebar" :style="{width: width+'px', height: height+'px'}">
     <menu-tree 
       :one-at-atime="true" 
       :menu-url="menuUrl"
@@ -21,7 +21,8 @@ import MenuTree from './base/MenuTree.vue'
 
 export default {
   props: {
-    width: Number
+    width: Number,
+    height: Number
   },
   data () {
     return {

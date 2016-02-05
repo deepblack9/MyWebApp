@@ -17,6 +17,10 @@
       @click="show = false">
       <span>&times;</span>
     </button>
+    <span v-if="type == 'success'" class="fa fa-check-circle"></span>
+    <span v-if="type == 'warning'" class="fa fa-warning"></span>
+    <span v-if="type == 'info'" class="fa fa-info-circle"></span>
+    <span v-if="type == 'danger'" class="fa fa-warning"></span>
     <slot></slot>
   </div>
 </template>

@@ -5,17 +5,19 @@
 <template>
   <div class="row" id="crud">
     <table-simple 
-      :url="url"
+      :query-url="queryUrl"
+      :save-url="saveUrl"
+      :del-url="delUrl"
       :idfield="idfield" 
-      :columns="columns" 
+      :model-name="modelName"
+      :columns="columns"
+      :form-fields="formFields" 
+      :query-
       :data="data" 
       :total-rows="totalRows"
       :width="width"
       :height="height">
     </table-simple>
-    <!-- <table-bootstrap 
-      :height="height"
-      :columns="columns"></table-bootstrap> -->
   </div>
 </template>
 
@@ -30,109 +32,13 @@ export default {
   },
   data () {
     return {
-      url: CONTEXT_PATH+'/security/queryAllRole.do',
+      queryUrl: CONTEXT_PATH+'/security/queryAllRole.do',
+      saveUrl: CONTEXT_PATH+'/security/saveRole.do',
+      delUrl: CONTEXT_PATH+'/security/deleteReferRole.do',
       idfield: 'roleId',
+      modelName: 'data',
       columns: [[
         {
-          field: 'state',
-          checkbox: true
-        },{
-          title: '角色名',
-          field: 'roleName',
-          width: 80
-        },{
-          title: '是否可用',
-          field: 'enable',
-          width: 80
-        },{
-          title: '备注',
-          field: 'remark',
-          width: 80
-        },{
-          title: '角色名',
-          field: 'roleName',
-          width: 80
-        },{
-          title: '是否可用',
-          field: 'enable',
-          width: 80
-        },{
-          title: '备注',
-          field: 'remark',
-          width: 80
-        },{
-          title: '角色名',
-          field: 'roleName',
-          width: 80
-        },{
-          title: '是否可用',
-          field: 'enable',
-          width: 80
-        },{
-          title: '备注',
-          field: 'remark',
-          width: 80
-        },{
-          title: '角色名',
-          field: 'roleName',
-          width: 80
-        },{
-          title: '是否可用',
-          field: 'enable',
-          width: 80
-        },{
-          title: '备注',
-          field: 'remark',
-          width: 80
-        },{
-          title: '角色名',
-          field: 'roleName',
-          width: 80
-        },{
-          title: '是否可用',
-          field: 'enable',
-          width: 80
-        },{
-          title: '备注',
-          field: 'remark',
-          width: 80
-        },{
-          title: '角色名',
-          field: 'roleName',
-          width: 80
-        },{
-          title: '是否可用',
-          field: 'enable',
-          width: 80
-        },{
-          title: '备注',
-          field: 'remark',
-          width: 80
-        },{
-          title: '角色名',
-          field: 'roleName',
-          width: 80
-        },{
-          title: '是否可用',
-          field: 'enable',
-          width: 80
-        },{
-          title: '备注',
-          field: 'remark',
-          width: 80
-        },{
-          title: '角色名',
-          field: 'roleName',
-          width: 80
-        },{
-          title: '是否可用',
-          field: 'enable',
-          width: 80
-        },{
-          title: '备注',
-          field: 'remark',
-          width: 80
-        },{
           title: '角色名',
           field: 'roleName',
           width: 80
@@ -146,6 +52,22 @@ export default {
           width: 80
         }
       ]],
+      formFields: [
+        { name:'data.roleId',mapping:'roleId',fieldLabel:'角色Id',xtype:'hidden'},
+        { name:'data.roleName',mapping:'roleName',fieldLabel:'角色名',xtype:'text'},
+        { name:'data.enable',
+          mapping:'enable',
+          fieldLabel:'是否可用',
+          xtype:'select',
+          options: [
+            { text: "是", value: 1 },
+            { text: "否", value: 0 }
+          ]},
+        { name:'data.remark',mapping:'remark',fieldLabel:'备注',xtype:'textarea'}
+      ],
+      queryFormMeta: [
+        { name:'data.roleName',fieldLabel:'角色名称'}
+      ],
       // columns:[
       //   [
       //     {

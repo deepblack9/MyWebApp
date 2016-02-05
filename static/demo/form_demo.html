@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--360浏览器优先以webkit内核解析-->
+    <title>主页示例</title>
+    <link rel="stylesheet" href="http://localhost:8080/static/assets/css/bootstrap.css?v=3.3.5">
+    <link rel="stylesheet" href="http://localhost:8080/static/assets/css/font-awesome.min.css?v=4.4.0">
+    <link rel="stylesheet" href="http://localhost:8080/static/assets/css/animate.min.css">
+</head>
+<body>
+	<div id="app">
+		<form id="form" v-on:submit.prevent="addUser">
+			<input v-for="field in fields" v-model="field.name" :value="field.name"/>
+	    <input type="submit" value="Add User">
+	  </form>
+  </div>
+  <script type="text/javascript" src="http://localhost:8080/node_modules/vue/dist/vue.js"></script>
+</body>
+<script type="text/javascript">
+	/**
+ * Create Vue app
+ */
+
+var app = new Vue({
+
+  // element to mount to
+  el: '#app',
+
+  // initial data
+  data: {
+  	fields: [{name:'newUser.name'},{name:'newUser.email'}],
+    users: [],
+    newUser: {
+    	name: '',
+    	email: ''
+    }
+  },
+
+  // computed property for form validation state
+  computed: {
+    validation: function () {
+      return {
+        name: !!this.newUser.name.trim(),
+        email: emailRE.test(this.newUser.email)
+      }
+    },
+    isValid: function () {
+      var validation = this.validation
+      return Object.keys(validation).every(function (key) {
+        return validation[key]
+      })
+    }
+  },
+
+  // methods
+  methods: {
+    addUser: function () {
+      if (this.isValid) {
+        Users.push(this.newUser)
+        this.newUser.name = ''
+        this.newUser.email = ''
+      }
+    },
+    removeUser: function (user) {
+      new Firebase(baseURL + 'users/' + user.id).remove()
+    }
+  }
+})
+</script>
+</html>
